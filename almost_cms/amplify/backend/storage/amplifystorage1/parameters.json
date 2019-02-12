@@ -1,0 +1,9 @@
+{
+    "bucketName": "almostcms",
+    "authPolicyName": "s3_amplify_7abed1e2",
+    "unauthPolicyName": "s3_amplify_7abed1e2",
+    "authRoleName": "almostcms-20190210172525-authRole",
+    "unauthRoleName": "almostcms-20190210172525-unauthRole",
+    "authPermissions": "rw",
+    "unauthPermissions": ""
+}
