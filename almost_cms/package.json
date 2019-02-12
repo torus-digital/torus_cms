@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "aws-amplify": "^1.1.19",
+    "aws-amplify-react": "^2.3.0",
     "draft-js": "^0.10.5",
     "draftjs-to-html": "^0.8.4",
-    "immutable": "^4.0.0-rc.12",
+    "html-to-draftjs": "^1.4.0",
+    "i": "^0.3.6",
+    "kleur": "^3.0.2",
+    "minimatch": "^3.0.4",
+    "npm": "^6.7.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-draft-wysiwyg": "^1.13.1",
@@ -25,5 +31,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "immutable": "^4.0.0-rc.12"
+  }
 }

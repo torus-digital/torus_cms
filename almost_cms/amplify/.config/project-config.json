@@ -1,0 +1,20 @@
+{
+    "projectName": "almostcms",
+    "projectPath": "/Users/gabriel/Desktop/almost_cms/almost_cms",
+    "defaultEditor": "sublime",
+    "frontendHandler": {
+        "javascript": "/Users/gabriel/.nvm/versions/node/v11.1.0/lib/node_modules/@aws-amplify/cli/node_modules/amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "react",
+        "config": {
+            "SourceDir": "src",
+            "DistributionDir": "build",
+            "BuildCommand": "npm almost-cms-amplify build",
+            "StartCommand": "npm almost-cms-amplify start"
+        }
+    },
+    "providers": {
+        "awscloudformation": "/Users/gabriel/.nvm/versions/node/v11.1.0/lib/node_modules/@aws-amplify/cli/node_modules/amplify-provider-awscloudformation"
+    }
+}

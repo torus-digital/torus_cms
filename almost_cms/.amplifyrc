@@ -1,0 +1,14 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "almostcms-20190210172525-authRole",
+            "UnauthRoleArn": "arn:aws:iam::519275522978:role/almostcms-20190210172525-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::519275522978:role/almostcms-20190210172525-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "almostcms-20190210172525-deployment",
+            "UnauthRoleName": "almostcms-20190210172525-unauthRole",
+            "StackName": "almostcms-20190210172525",
+            "StackId": "arn:aws:cloudformation:us-east-1:519275522978:stack/almostcms-20190210172525/c367d0f0-2d82-11e9-9f30-0e0a24f9b5c2"
+        }
+    }
+}
