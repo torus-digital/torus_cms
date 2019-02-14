@@ -142,6 +142,25 @@
 					"unauthPermissions": ""
 				}
 			}
+		},
+		"apialmostcms": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/almostcms-20190210172525-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"Parameters": {
+					"AppSyncApiName": "almostcms",
+					"AuthCognitoUserPoolId": {
+						"Fn::GetAtt": [
+							"authcognitoa5433b5c",
+							"Outputs.UserPoolId"
+						]
+					},
+					"schemaGraphql": "s3://almostcms-20190210172525-deployment/amplify-appsync-files/schema.graphql.1550123630700",
+					"ResolverBucket": "almostcms-20190210172525-deployment",
+					"ResolverRootKey": "amplify-appsync-files",
+					"DeploymentTimestamp": "1550123630700"
+				}
+			}
 		}
 	},
 	"Outputs": {

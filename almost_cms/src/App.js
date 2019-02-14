@@ -7,6 +7,53 @@ import './App.css';
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { withAuthenticator } from 'aws-amplify-react'
 import { Storage } from 'aws-amplify'
+import Amplify, { graphqlOperation }  from "aws-amplify";
+import { Connect } from "aws-amplify-react";
+import * as mutations from './graphql/mutations';
+
+class AddArticle extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        title: '',
+        body: '',
+    };
+  }
+
+  handleChange(title, ev) {
+      this.setState({ [title]: ev.target.value });
+  }
+
+  async submit() {
+    const { onCreate } = this.props;
+    var input = {
+      title: this.state.title,
+      body: this.state.body
+    }
+    console.log(input);
+    await onCreate({input})
+  }
+
+  render(){
+    return (
+        <div>
+            <input
+                name="title"
+                placeholder="title"
+                onChange={(ev) => { this.handleChange('title', ev)}}
+            />
+            <input
+                name="body"
+                placeholder="body"
+                onChange={(ev) => { this.handleChange('body', ev)}}
+            />
+            <button onClick={this.submit.bind(this)}>
+                Add
+            </button>
+        </div>
+    );
+  }
+}
 
 class App extends Component {
   state = {
@@ -47,6 +94,12 @@ class App extends Component {
     const { editorState } = this.state;
     return (
     <>
+      <Connect mutation={graphqlOperation(mutations.createArticle)}>
+        {({mutation}) => (
+          <AddArticle onCreate={mutation} />
+        )}
+      </Connect>
+
       <div className="App">
         <div className="container">
           <h1>Post a comment</h1>
