@@ -1,68 +1,98 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# AWS AppSync GraphQL Photo Sample
 
-## Available Scripts
+**Please submit issues to the [appsync-sdk-js](https://github.com/awslabs/aws-mobile-appsync-sdk-js/issues) repository.**
 
-In the project directory, you can run:
+![Demo](public/demo.gif)
 
-### `npm start`
+This sample application shows how to use GraphQL to build an application that a user can login to the system, then upload and download photos which are private to them. The sample is written in React and uses AWS AppSync, Amazon Cognito, Amazon DynamoDB and Amazon S3 as well as the AWS Mobile CLI.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Architecture Overview
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+![Architecture](public/architecture_diagram.png)
 
-### `npm test`
+## Prerequisites
++ [AWS Account](https://aws.amazon.com/mobile/details/)
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
++ [NodeJS](https://nodejs.org/en/download/) with [NPM](https://docs.npmjs.com/getting-started/installing-node)
 
-### `npm run build`
++ [AWS Ampify CLI](https://aws-amplify.github.io/)
+  - `npm install -g @aws-amplify/cli`
+  - `amplify configure` 
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Started
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+1. Clone this repo locally.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+git clone https://github.com/aws-samples/aws-amplify-graphql.git
+cd aws-amplify-graphql
+```
 
-### `npm run eject`
+2. Initialize the amplify project.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+amplify init
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Configure an Amazon Cognito User Pool to manage user credentials.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+amplify add auth
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+![Architecture](public/amplify-add-auth.png)
 
-## Learn More
+4. Configure an Amazon S3 bucket to store files.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+amplify add storage
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![Architecture](public/amplify-add-storage.png)
 
-### Code Splitting
+5. Configure an AWS AppSync API to interact with my backend data sources such as Amazon DynamoDB, Amazon Elasticsearch, AWS Lambda, and self hosted HTTP services. 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+```
+amplify add api
 
-### Analyzing the Bundle Size
+# When prompted for a schema.graphql provide the value "schema.graphql"
+# to point to the file checked in to the root of the project directory.
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+![Architecture](public/amplify-add-api.png)
 
-### Making a Progressive Web App
+> After running this command, you edit the schema.graphql located at `amplify/backend/api/<-projectname->/schema.graphql`. You may delete the one at the root of the project directory as it will no longer be used.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+6. Deploy your project.
 
-### Advanced Configuration
+```
+amplify push
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+# When asked if you would like to generate client code, you can
+# say no since we are using plain JavaScript.
+```
 
-### Deployment
+7. Install client dependencies.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+```
+npm install
 
-### `npm run build` fails to minify
+# or
+yarn
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+8. Run the react application
+
+```
+npm run start
+
+# or
+yarn start
+```
+
+The AWS Amplify CLI will create an Amazon Cognito User Pool and Identity Pool, an Amazon S3 bucket with private directories to store each user's photo and an AWS AppSync API that uses Amazon DynamoDB to store data.
+
+The sample uses [AWS Amplify](https://github.com/aws/aws-amplify) to perform the Sign-Up and Sign-In flows with a Higher Order Component.
+
+If the application runs successfully you should be able to enter the name of a photo, choose a file and then press **Add photo**. This will make a GraphQL call to enter the record into the database and simultaneously upload the object to S3. An immediate fetch of the record will then be at the bottom of the screen.
+
