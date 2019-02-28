@@ -52,15 +52,6 @@ const client = new AWSAppSyncClient({
   complexObjectsCredentials: () => Auth.currentCredentials()
 });
 
-
-class CreateArticle extends Component {
-  heading = '<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta name="description" content=""> <meta name="author" content=""> <title>Creative - Start Bootstrap Theme</title> <!-- Font Awesome Icons --> <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> <!-- Google Fonts --> <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet"> <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css"> <!-- Plugin CSS --> <link href="../vendor/magnific-popup/magnific-popup.css" rel="stylesheet"> <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> <!-- Theme CSS - Includes Bootstrap --> <link href="../css/index.css" rel="stylesheet"> </head> <body id="page-top"></body>';
-  nav = '';
-  header = '';
-  body = '';
-  footer = '';
-}
-
 class AddArticle extends Component {
     state = {
     editorState: EditorState.createEmpty(),
@@ -113,7 +104,7 @@ class AddArticle extends Component {
             onEditorStateChange={this.onEditorStateChange}
           />
           <button onClick={this.submit.bind(this)}>
-            Add
+            Add to DB
           </button>
         </div>
      
@@ -123,6 +114,21 @@ class AddArticle extends Component {
 }
 
 class App extends Component {
+  
+  addToStorage = () => {
+    const { editorState } = this.state;
+    const heading = '<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta name="description" content=""> <meta name="author" content=""> <title>Creative - Start Bootstrap Theme</title> <!-- Font Awesome Icons --> <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> <!-- Google Fonts --> <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet"> <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css"> <!-- Plugin CSS --> <link href="../vendor/magnific-popup/magnific-popup.css" rel="stylesheet"> <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> <!-- Theme CSS - Includes Bootstrap --> <link href="../css/index.css" rel="stylesheet"> </head> <body id="page-top"></body>';
+    const nav = '';
+    const header = '';
+    const footer = '';
+    var body = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+    var page = heading + nav + header + body + footer;
+    Storage.put('dynamic/article_title.html', page)
+    .then (result => {
+      console.log('result: ', result)
+    })
+    .catch(err => console.log('error: ', err));
+  }
 
   render() {
     return (
@@ -135,6 +141,9 @@ class App extends Component {
           </Connect>
         </div>
         <div>
+          <button onClick={this.addToStorage}>Create Article</button>
+        </div>
+        <div>
           <div>
             <h1>Post a Picture</h1>
           </div>
@@ -142,9 +151,7 @@ class App extends Component {
             <AddPhoto options={{ bucket: S3_BUCKET_NAME, region: S3_BUCKET_REGION }} />
             <AllPhotos />
           </div>
-        </div>
-
-        
+        </div>       
       </div>
     );
   }
