@@ -8,18 +8,17 @@ const s3 = new aws.S3({
         
 // Define 2 new variables for the source and destination buckets
 var srcBucket = "***REMOVED***";
-var destBucket = "***REMOVED***";
-var exTension = "private/us-east-1:ac06372e-5966-482a-b1eb-df3e87441368"
-var sourceObject = "89573202-bb97-4b2d-b93c-18cb9959f0d6.jpg";
+var destBucket = "***REMOVED***/";
+
 
 //Main function
 exports.handler = (event, context, callback) => {
         
 //Copy the current object to the destination bucket - http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#copyObject-property
 s3.copyObject({ 
-    CopySource: srcBucket + '/' + exTension + '/' + sourceObject,
-    Bucket: destBucket,
-    Key: sourceObject
+    CopySource: srcBucket + '/' + event.sourceRoute + '/' + event.sourceObject,
+    Bucket: destBucket + event.destRoute,
+    Key: event.sourceObject
     }, function(copyErr, copyData){
        if (copyErr) {
             console.log("Error: " + copyErr);
