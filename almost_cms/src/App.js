@@ -95,7 +95,7 @@ class AddArticle extends Component {
     const footer = '<footer class="bg-light py-5"> <div class="container-fluid"> <div class="row small text-center text-muted"> <div class="col-md-6"> <div>Copyright &copy; 2019 - Almost CMS</div> </div> <div class="col-md-6"> <div> Powered By <a href="http://torus.digital">Almost CMS</a></div> </div> </div> </div> </footer>';
     var body = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     var page = heading + nav + header + body + footer;
-    Storage.put('articles/article_title.html', page)
+    Storage.put('articles/article_title.html', page, {contentType: 'text/html'})
     .then (result => {
       console.log('result: ', result)
     })
