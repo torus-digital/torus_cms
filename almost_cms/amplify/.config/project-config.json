@@ -1,20 +1,17 @@
 {
-    "projectName": "almostcms",
-    "projectPath": "/Users/gabriel/Desktop/almost_cms/almost_cms",
-    "defaultEditor": "sublime",
-    "frontendHandler": {
-        "javascript": "/Users/gabriel/.nvm/versions/node/v11.1.0/lib/node_modules/@aws-amplify/cli/node_modules/amplify-frontend-javascript"
-    },
+    "projectName": "awsamplifygraphql",
     "javascript": {
         "framework": "react",
         "config": {
             "SourceDir": "src",
             "DistributionDir": "build",
-            "BuildCommand": "npm almost-cms-amplify build",
-            "StartCommand": "npm almost-cms-amplify start"
+            "BuildCommand": "npm run-script build",
+            "StartCommand": "npm run-script start"
         }
     },
-    "providers": {
-        "awscloudformation": "/Users/gabriel/.nvm/versions/node/v11.1.0/lib/node_modules/@aws-amplify/cli/node_modules/amplify-provider-awscloudformation"
-    }
+    "providers": [
+        "awscloudformation"
+    ],
+    "frontend": "javascript",
+    "version": "2.0"
 }
