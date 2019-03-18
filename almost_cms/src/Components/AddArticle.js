@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
-import { addToStorage } from './Shared.js';
+import { addToStorage, copyToBucket } from './Shared.js';
 import 'semantic-ui-css/semantic.min.css';
 
 //rich text editor
@@ -61,19 +61,52 @@ class AddArticle extends Component {
     console.log(input);
 		let firstFunct = await onCreate({input});
 		console.log(firstFunct);
-		let secondFunct = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj);
-		switch(secondFunct) {
+		// Execute the Add article function
+		let addArticle = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj); 
+		switch(addArticle) {
+			// If the add article function is succesful
 			case 'Success':
-				console.log("Success!");
-				//execute next function
-				const index = await new createIndex();
-				console.log(index);
-				// create index function
-				break;
-			default:
-				console.log("unsuccesful case");
-		}
-	}
+				console.log("Succesfully added your new article to your private S3 storage bucket!");
+				const bucketVars = {
+					sourceRoute: `public/${section}`,
+					sourceObject: `${title}.html`,
+					destRoute: `${section}`
+				};
+				// execute the copy article function.
+				let copyArticle = await new copyToBucket(bucketVars);
+				switch(copyArticle) {
+					// If the copy article function is succesful
+					case 'Success':
+						console.log("Succesfully copied the new article to your public bucket!");
+						// execute the create index function
+						let addIndex = await new createIndex();
+						switch(addIndex) {
+							// if the create index function is succesful
+							case 'Success':
+								console.log("Successfully created a new index for your articles and added it to your private S3 storage bucket!");
+								// execute the copy index function
+								const bucketVars = {
+									sourceRoute: 'public/articles',
+									sourceObject: 'index.html',
+									destRoute: 'articles'
+								};
+								let copyIndex = copyToBucket(bucketVars);
+								console.log("index copy receipt: ", copyIndex);
+								console.log( "Congratulations! Succesfully created your new Article!" );
+								break;
+							default:
+								console.log("Error: Failed to save the new articles index");
+						}
+						break;
+					default:
+						console.log(copyArticle)
+						console.log("Error: Failed to copy your article to your public bucket.");
+				}
+					break;
+				default:
+					console.log("Error: Failed to add your Article to your private S3 storage bucket.")
+				}
+	}			
   
   render(){
     const { editorState } = this.state;

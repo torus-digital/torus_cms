@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export default gql`
 query {
-  listArticles {
+  listArticles(limit: 100) {
     items {
       title
       body   
