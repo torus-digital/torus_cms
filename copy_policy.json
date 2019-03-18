@@ -1,0 +1,34 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ListSourceAndDestinationBuckets",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:ListBucketVersions"
+            ],
+            "Resource": [
+                "arn:aws:s3:::awsamplifygraphql31d067b54fe946609156b15e77c1b3f8",
+                "arn:aws:s3:::torus.digital"
+            ]
+        },
+        {
+            "Sid": "SourceBucketGetObjectAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::awsamplifygraphql31d067b54fe946609156b15e77c1b3f8/*"
+        },
+        {
+            "Sid": "DestinationBucketPutObjectAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::torus.digital/*"
+        }
+    ]
+ }
