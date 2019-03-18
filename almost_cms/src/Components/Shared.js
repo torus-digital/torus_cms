@@ -25,8 +25,10 @@ export function addToStorage(contentType, section, title, fileObj) {
     .then (result => {
         console.log('result: ', result);
         console.log(result);
-        return result;
+        return "Success";
     })
-    .catch(err => console.log('error: ', err));
+    .catch(err => {
+        console.log('error: ', err)
+    });
     return ax;
 }
