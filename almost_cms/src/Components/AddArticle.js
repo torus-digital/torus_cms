@@ -9,20 +9,6 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 //import htmlToDraft from 'html-to-draftjs';
 
-
-class nextFunction {
-	constructor(object) {
-		this.contentType = object.contentType;
-		this.section = object.section;
-		this.title = object.title;
-		this.fileObj = object.fileObj;
-	}
-	then(resolve, reject) {
-		let funct = addToStorage(this.contentType, this.section, this.title, this.fileObj);
-		console.log(funct);
-	}
-}
-
 class AddArticle extends Component {
     state = {
     editorState: EditorState.createEmpty(),
@@ -57,7 +43,7 @@ class AddArticle extends Component {
 		const contentType = 'text/html';
 		const section = 'articles';
 		const title = this.state.title;
-		const object = {
+		const Obj = {
 			contentType: contentType,
 			section: section,
 			title: title,
@@ -71,8 +57,14 @@ class AddArticle extends Component {
     console.log(input);
 		let firstFunct = await onCreate({input});
 		console.log(firstFunct);
-		let secondFunct = await new nextFunction(object);
-		console.log(secondFunct);
+		let secondFunct = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj);
+		switch(secondFunct) {
+			case 'Success':
+				console.log("succesful case");
+				break;
+			default:
+				console.log("unsiccesful case");
+		}
 	}
   
   render(){
