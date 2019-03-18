@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Storage } from 'aws-amplify'
 
 
-export function CopyToBucket(bucketVars) {
+export function copyToBucket(bucketVars) {
     var x = '';
     const url = `***REMOVED***`;
 
@@ -11,13 +11,13 @@ export function CopyToBucket(bucketVars) {
       'Content-Type': 'application/x-www-form-urlencoded' 
     };
 
-    axios.post( url, bucketVars, { headers } )
+    const post = axios.post( url, bucketVars, { headers } )
       .then(res => {
-        console.log(res);
-        console.log(res.data);
-        x = res.data;
+        console.log('post response: ', res.data);
+        x = 'Success';
+        return x;
       })
-    return x;
+    return post;
 }
 
 export function addToStorage(contentType, section, title, fileObj) {
@@ -25,7 +25,7 @@ export function addToStorage(contentType, section, title, fileObj) {
     .then (result => {
         console.log('result: ', result);
         console.log(result);
-        return "Success";
+        return 'Success';
     })
     .catch(err => {
         console.log('error: ', err)

@@ -30,9 +30,9 @@ export default function createIndex(){
 								</h2>
 							</div>
 							<div class="row">
-							<p>
-								${elem.body}
-							</p>
+								<p>
+									${elem.body}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -48,7 +48,7 @@ export default function createIndex(){
 			fileObj: fileObj,
 		}
 		let secondFunct = addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj); 
-		return secondFunct;					
+		return secondFunct;				
 	})
 	.catch(err => {
 			console.log('error: ', err)
