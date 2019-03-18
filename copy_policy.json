@@ -1,0 +1,34 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ListSourceAndDestinationBuckets",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:ListBucketVersions"
+            ],
+            "Resource": [
+                "***REMOVED***",
+                "***REMOVED***"
+            ]
+        },
+        {
+            "Sid": "SourceBucketGetObjectAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "***REMOVED***/*"
+        },
+        {
+            "Sid": "DestinationBucketPutObjectAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": "***REMOVED***/*"
+        }
+    ]
+ }

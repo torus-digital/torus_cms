@@ -1,81 +1,87 @@
 import React, { Component } from 'react';
-import { EditorState, convertToRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import draftToHtml from 'draftjs-to-html';
-//import htmlToDraft from 'html-to-draftjs';
 import './App.css';
+import './Components/AddArticle.js';
+import 'semantic-ui-css/semantic.min.css'
+
+//rich text editor
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { withAuthenticator } from 'aws-amplify-react'
-import { Storage } from 'aws-amplify'
+
+//article mutations
+import { graphqlOperation }  from "aws-amplify";
+import { Connect } from "aws-amplify-react";
+import * as mutations from './GraphQL/MutationCreateArticle';
+
+//AppSync and Apollo libraries
+import AWSAppSyncClient from "aws-appsync";
+import { Rehydrated } from 'aws-appsync-react';
+import { ApolloProvider } from 'react-apollo';
+
+//Amplify
+import Amplify, { Auth } from 'aws-amplify';
+import { withAuthenticator } from 'aws-amplify-react';
+
+// Components
+import AllPhotos from "./Components/AllPhotos";
+import AddPhoto from "./Components/AddPhoto";
+import AddArticle from "./Components/AddArticle"
+
+import awsconfig from './aws-exports';
+
+// Amplify init
+Amplify.configure(awsconfig);
+
+const GRAPHQL_API_REGION = awsconfig.aws_appsync_region
+const GRAPHQL_API_ENDPOINT_URL = awsconfig.aws_appsync_graphqlEndpoint
+const S3_BUCKET_REGION = awsconfig.aws_user_files_s3_bucket_region
+const S3_BUCKET_NAME = awsconfig.aws_user_files_s3_bucket
+const AUTH_TYPE = awsconfig.aws_appsync_authenticationType
+
+// AppSync client instantiation
+const client = new AWSAppSyncClient({
+  url: GRAPHQL_API_ENDPOINT_URL,
+  region: GRAPHQL_API_REGION,
+  auth: {
+    type: AUTH_TYPE,
+    // Get the currently logged in users credential.
+    jwtToken: async () => (await Auth.currentSession()).getAccessToken().getJwtToken(),
+  },
+  // Amplify uses Amazon IAM to authorize calls to Amazon S3. This provides the relevant IAM credentials.
+  complexObjectsCredentials: () => Auth.currentCredentials()
+});
 
 class App extends Component {
-  state = {
-    editorState: EditorState.createEmpty(),
-  }
-
-  onEditorStateChange: Function = (editorState) => {
-    this.setState({
-      editorState,
-    });
-  };
-
-  addToStorage = () => {
-    const { editorState } = this.state;
-    Storage.put('dynamic/article_title', draftToHtml(convertToRaw(editorState.getCurrentContent())))
-    .then (result => {
-      console.log('result: ', result)
-    })
-    .catch(err => console.log('error: ', err));
-  }
-
-  readFromStorage = () => {
-    Storage.get('dynamic/article_title')
-      .then(data => console.log('data from S3: ', data))
-      .catch(err => console.log('error'))
-  }
-
-  onChange(e) {
-      const file = e.target.files[0];
-      Storage.put('example.png', file, {
-          contentType: 'image/png'
-      })
-      .then (result => console.log(result))
-      .catch(err => console.log(err));
-  }
 
   render() {
-    const { editorState } = this.state;
     return (
-    <>
       <div className="App">
-        <div className="container">
-          <h1>Post a comment</h1>
-          <Editor
-            editorState={editorState}
-            wrapperClassName="demo-wrapper"
-            editorClassName="demo-editor"
-            onEditorStateChange={this.onEditorStateChange}
-          />
-          <textarea
-            disabled
-            value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-          />
-          <button onClick={this.addToStorage}>Add To Storage</button>
-          <button onClick={this.readFromStorage}> Preview </button>
+        <div>
+          <Connect mutation={graphqlOperation(mutations.createArticle)}>
+            {({mutation}) => (
+              <AddArticle onCreate={mutation} />
+            )}
+          </Connect>
         </div>
+        
+        <div>
+          <div>
+            <h1>Post a Picture</h1>
+          </div>
+          <div className="App-content">
+            <AddPhoto options={{ bucket: S3_BUCKET_NAME, region: S3_BUCKET_REGION }} />
+            <AllPhotos />
+          </div>
+        </div>       
       </div>
-      <div className="container section">
-        <h1>Post a picture</h1>
-        <input
-          type="file" accept='image/png'
-          onChange={(e) => this.onChange(e)}
-        />
-      </div>
-    </>
-
     );
   }
 }
 
+const AppWithAuth = withAuthenticator(App, true);
 
-export default withAuthenticator(App, { includeGreetings: true })
+export default () => (
+  <ApolloProvider client={client}>
+    <Rehydrated>
+      <AppWithAuth />
+    </Rehydrated>
+  </ApolloProvider>
+);
