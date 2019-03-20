@@ -27,7 +27,8 @@ class AddArticle extends Component {
     super(props);
     this.state = {
         title: '',
-        body: '',
+				body_html: '',
+				body_txt: '',
     };
   }
 
@@ -56,9 +57,10 @@ class AddArticle extends Component {
     const { onCreate } = this.props;
     var input = {
       title: this.state.title,
-      body: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-    }
-    console.log(input);
+			body_html: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+			body_txt: this.state.editorState.getCurrentContent().getPlainText(),
+		}
+		console.log("input: ", input);
 		let firstFunct = await onCreate({input});
 		console.log(firstFunct);
 		// Execute the Add article function
