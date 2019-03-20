@@ -31,7 +31,7 @@ export default function createIndex(){
 							</div>
 							<div class="row">
 								<p>
-									${elem.body}
+									${elem.body_txt}
 								</p>
 							</div>
 						</div>
