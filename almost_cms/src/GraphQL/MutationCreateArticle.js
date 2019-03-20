@@ -2,7 +2,8 @@ export const createArticle = `mutation CreateArticle($input: CreateArticleInput!
     createArticle(input: $input) {
       id
       title
-      body
+      body_html
+      body_txt
       file {
         bucket
         region
