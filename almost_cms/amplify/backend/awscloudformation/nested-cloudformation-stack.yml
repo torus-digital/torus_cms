@@ -170,6 +170,7 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/awsamplifygraphql-20190216205351-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
+					"APIKeyExpirationEpoch": "-1",
 					"DynamoDBBillingMode": "PROVISIONED",
 					"AppSyncApiName": "awsamplifygraphql",
 					"AuthCognitoUserPoolId": {
@@ -179,7 +180,7 @@
 						]
 					},
 					"S3DeploymentBucket": "awsamplifygraphql-20190216205351-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/a36cf36fca099160e7c5236078de6dacbaa184dd",
+					"S3DeploymentRootKey": "amplify-appsync-files/5cce60a91dd85c4078824905413ff3c11f500735",
 					"env": "NONE"
 				}
 			}

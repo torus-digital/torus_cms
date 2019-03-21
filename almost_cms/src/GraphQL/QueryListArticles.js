@@ -5,7 +5,7 @@ query {
   listArticles(limit: 100) {
     items {
       title
-      body   
+      body_txt   
         }
     }
 }`;
