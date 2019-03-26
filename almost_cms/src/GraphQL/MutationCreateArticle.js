@@ -4,11 +4,6 @@ export const createArticle = `mutation CreateArticle($input: CreateArticleInput!
       title
       body_html
       body_txt
-      file {
-        bucket
-        region
-        key
-      }
     }
   }
   `;

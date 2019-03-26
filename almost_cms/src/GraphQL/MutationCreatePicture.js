@@ -8,10 +8,20 @@ mutation ($input: CreatePictureInput!) {
     visibility
     owner
     createdAt
+  }
+}`;
+
+
+export const createPicture = `mutation CreatePicture($input: CreatePictureInput!) {
+  createPicture(input: $input) {
+    id
+    title
+    description
     file {
-      region
       bucket
+      region
       key
     }
   }
-}`;
+}
+`;
