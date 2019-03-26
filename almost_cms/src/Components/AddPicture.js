@@ -6,33 +6,37 @@ import { Storage } from 'aws-amplify'
 class AddPicture extends Component {
     onChange(e) {
       const file = e.target.files[0];
-      Storage.put(this.state.name, file, {
+      Storage.put(this.state.title, file, {
           contentType: 'image/'
       })
       .then (result => console.log(result))
       .catch(err => console.log(err));
+      this.setState({ file: `gallery/${this.state.title}` });
     }
   
     constructor(props) {
       super(props);
       this.state = {
-          name: '',
-          file: null,
+          title: '',
+          description: '',
+          file: '',
       };
     }
   
-    handleChange(name, ev) {
-        this.setState({ [name]: ev.target.value });
+    handleChange(title, ev) {
+        this.setState({ [title]: ev.target.value });
     }
   
     async submit() {
       const { onCreate } = this.props;
       var input = {
-        name: this.state.name,
+        title: this.state.title,
+        description: this.state.description,
         file: this.state.file,
       }
-      console.log(input);
-      await onCreate({input})
+      console.log("input: ", input );
+      let firstFunct = await onCreate({input})
+      console.log(firstFunct);
     }
   
     render(){
@@ -41,10 +45,16 @@ class AddPicture extends Component {
             <div className="container section">
             <h1>Post an Image</h1>
             <input
-              name="name"
-              placeholder="name"
+              name="title"
+              placeholder="title"
               type="text"
-              onChange={(ev) => { this.handleChange('name', ev)}}
+              onChange={(ev) => { this.handleChange('title', ev)}}
+            />
+            <input
+              name="description"
+              placeholder="description"
+              type="text"
+              onChange={(ev) => { this.handleChange('description', ev)}}
             />
             <input
               name="file" 
