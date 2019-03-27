@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-
 //import { addToStorage, copyToBucket } from './Shared.js';
 import { Storage } from 'aws-amplify'
 
 class AddPicture extends Component {
     onChange(e) {
       const file = e.target.files[0];
-      Storage.put(this.state.title, file, {
+      Storage.put(`gallery/${this.state.title}`, file, {
           contentType: 'image/'
       })
       .then (result => console.log(result))
