@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
+
 //import { addToStorage, copyToBucket } from './Shared.js';
 import { Storage } from 'aws-amplify'
 
 class AddPicture extends Component {
     onChange(e) {
       const file = e.target.files[0];
-      Storage.put(`gallery/${this.state.title}`, file, {
+      const file_str = file.name;
+      const ext = file_str.substr(file_str.length - 3);
+      Storage.put(`${this.state.title}.${ext}`, file, {
           contentType: 'image/'
       })
       .then (result => console.log(result))
       .catch(err => console.log(err));
-      this.setState({ file: `gallery/${this.state.title}` });
+      this.setState({ file: file.name });
+
     }
   
     constructor(props) {
@@ -27,6 +31,7 @@ class AddPicture extends Component {
     }
   
     async submit() {
+        console.log("file: ", this.state.file)
       const { onCreate } = this.props;
       var input = {
         title: this.state.title,
