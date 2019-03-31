@@ -20,8 +20,13 @@ export function copyToBucket(bucketVars) {
     return post;
 }
 
-export function addToStorage(contentType, section, title, fileObj) {
-    let ax = Storage.put(`${section}/${title}.html`, fileObj, {contentType: contentType})
+export function addToStorage(contentType, section, title, fileObj, ext) {
+    let ax = Storage.put(
+      `${section}/${title}.${ext}`, fileObj, {contentType: contentType}, {
+        progressCallback(progress) {
+            console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
+      },
+    })
     .then (result => {
         console.log('result: ', result);
         console.log(result);
