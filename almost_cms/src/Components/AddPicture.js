@@ -44,7 +44,7 @@ class AddPicture extends Component {
       switch(addPicture) {
         // if the create index function is succesful
         case 'Success':
-          console.log(`Succesfully added your image ${file_str}.${ext} to your s3 storage bucket.`)
+          console.log(`Succesfully added your image ${file_str} to your s3 storage bucket.`)
           const bucketVars = {
             sourceRoute: `public/${section}`,
             sourceObject: `${this.state.title}.${ext}`,
