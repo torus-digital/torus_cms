@@ -49,7 +49,7 @@ export default function createIndex(){
 			title: title,
 			fileObj: fileObj,
 		}
-		let secondFunct = addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj); 
+		let secondFunct = addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj, 'html'); 
 		return secondFunct;				
 	})
 	.catch(err => {

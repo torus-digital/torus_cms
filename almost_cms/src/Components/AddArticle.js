@@ -64,7 +64,7 @@ class AddArticle extends Component {
 		let firstFunct = await onCreate({input});
 		console.log(firstFunct);
 		// Execute the Add article function
-		let addArticle = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj); 
+		let addArticle = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj, 'html'); 
 		switch(addArticle) {
 			// If the add article function is succesful
 			case 'Success':
