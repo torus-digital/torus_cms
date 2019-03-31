@@ -6,6 +6,6 @@ query {
     items {
       title
       body_txt   
-        }
+      }
     }
 }`;
