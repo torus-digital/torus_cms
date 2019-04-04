@@ -24,6 +24,7 @@ class AddPicture extends Component {
     handleChange(title, ev) {
         this.setState({ [title]: ev.target.value });
     }
+    
   
     async submit() {
       const { onCreate } = this.props;
@@ -39,7 +40,7 @@ class AddPicture extends Component {
         file: `${this.state.title}.${ext}`,
       }
       let firstFunct = await onCreate({input})
-      console.log("first fucntion: ", firstFunct);
+      console.log("Succesfully added to the DB:", firstFunct.data.createPicture);
       let addPicture = await new addToStorage(contentType, section, title, file, ext);
       switch(addPicture) {
         // if the create index function is succesful
@@ -51,7 +52,7 @@ class AddPicture extends Component {
           };
           let copyPicture = await new copyToBucket(bucketVars);
           switch(copyPicture) {
-            // If the copy article function is succesful
+            // If the copy Picture function is succesful
             case 'Success':
               console.log(`Succesfully copied ${bucketVars.sourceObject} to ${bucketVars.destRoute}`);
               // execute the create index function
@@ -112,7 +113,7 @@ class AddPicture extends Component {
               accept='image/'
               onChange={(e) => this.onChange(e)}
             />
-            <button onClick={this.submit.bind(this)}>
+            <button disabled={!(this.state.title && this.state.file)} onClick={this.submit.bind(this)}>
               Add
             </button>
           </div>
