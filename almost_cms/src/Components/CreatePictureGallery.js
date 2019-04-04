@@ -5,9 +5,7 @@ import { addToStorage } from './Shared.js';
 export default function createGallery(){
 	let query = API.graphql(graphqlOperation(gql))
 	.then (result => {
-		console.log('result: ', result);
 		const pictures = result.data.listPictures.items;
-		console.log(pictures);
 		const title = 'index';
 		const section = 'gallery';
 		const heading = `<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta name="description" content=""> <meta name="author" content=""> <title> Almost CMS - ${section} - ${title} </title> <!-- Font Awesome Icons --> <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet"> <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css"> <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" /> <link href="../css/gallery.css" rel="stylesheet"> <link href="../css/index.css" rel="stylesheet"> </head> <body id="page-top">`;
