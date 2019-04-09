@@ -1,5 +1,6 @@
 {
   "name": "almost-cms",
+  "homepage": "http://admin.almostcms.org/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -48,6 +49,5 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gkpty/almost_cms/issues"
-  },
-  "homepage": "https://github.com/gkpty/almost_cms#readme"
+  }
 }

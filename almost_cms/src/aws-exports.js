@@ -10,7 +10,10 @@ const awsmobile = {
     "aws_user_files_s3_bucket_region": "us-east-1",
     "aws_appsync_graphqlEndpoint": "https://j2bywpkju5a7fhqwqwwqpnbnbe.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_appsync_region": "us-east-1",
-    "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS"
+    "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
+    "aws_content_delivery_bucket": "admin.almostcms.org",
+    "aws_content_delivery_bucket_region": "us-east-1",
+    "aws_content_delivery_url": "http://admin.almostcms.org.s3-website-us-east-1.amazonaws.com"
 };
 
 
