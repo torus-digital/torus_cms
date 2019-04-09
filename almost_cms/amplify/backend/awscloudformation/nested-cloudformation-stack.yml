@@ -184,6 +184,16 @@
 					"env": "NONE"
 				}
 			}
+		},
+		"hostingS3AndCloudFront": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/awsamplifygraphql-20190216205351-deployment/amplify-cfn-templates/hosting/template.json",
+				"Parameters": {
+					"bucketName": "admin.almostcms.org",
+					"env": "NONE"
+				}
+			}
 		}
 	},
 	"Outputs": {
