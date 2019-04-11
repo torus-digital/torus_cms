@@ -7,8 +7,8 @@ const s3 = new aws.S3({
  });
         
 // Define 2 new variables for the source and destination buckets
-var srcBucket = "***REMOVED***";
-var destBucket = "***REMOVED***/";
+var srcBucket = "SOURCE-BUCKET-NAME";
+var destBucket = "DESTINATION-BUCKET-NAME/";
 
 
 //Main function

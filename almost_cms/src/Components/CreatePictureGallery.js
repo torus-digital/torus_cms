@@ -13,7 +13,7 @@ export default function createGallery(){
 		const header = `<section class="page-heading bg-primary" id="about"> <div class="container"> <div class="row justify-content-center"> <div class="col-lg-8 text-center"> <h4 class="text-white mt-0">The latest on Almost CMS</h4> </div> </div> </div> </section>`;
 		const pregallery = `<section id="portfolio"> <div class="container-fluid p-0"> <div class="row no-gutters popup-gallery">`
 		const postgallery = `</div> </div> </section>`
-		const footer = `</div> <footer class="bg-light py-5"> <div class="container-fluid"> <div class="row small text-center text-muted"> <div class="col-md-6"> <div>Copyright &copy; 2019 - Almost CMS</div> </div> <div class="col-md-6"> <div> Powered By <a href="http://***REMOVED***">Almost CMS</a></div> </div> </div> </div> </footer>`;
+		const footer = `</div> <footer class="bg-light py-5"> <div class="container-fluid"> <div class="row small text-center text-muted"> <div class="col-md-6"> <div>Copyright &copy; 2019 - Almost CMS</div> </div> <div class="col-md-6"> <div> Powered By <a href="http://torus.digital">Almost CMS</a></div> </div> </div> </div> </footer>`;
 		const scripts = `<script src="../vendor/jquery/jquery.min.js"></script> <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"> </script> <script src="../js/gallery.js"></script> </body> </html>`
 		const contentType = 'text/html';
 		var gallery = '';
