@@ -7,8 +7,8 @@ const s3 = new aws.S3({
  });
         
 // Define 2 new variables for the source and destination buckets
-var srcBucket = "awsamplifygraphql31d067b54fe946609156b15e77c1b3f8";
-var destBucket = "torus.digital/";
+var srcBucket = "SOURCE-BUCKET-NAME";
+var destBucket = "DESTINATION-BUCKET-NAME/";
 
 
 //Main function
