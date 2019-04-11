@@ -4,7 +4,7 @@ import { Storage } from 'aws-amplify'
 
 export function copyToBucket(bucketVars) {
     var x = '';
-    const url = `***REMOVED***`;
+    const url = process.env.REACT_APP_COPY_BUCKET_URL;
     console.log("Copying your file...");
 
     const headers = {
