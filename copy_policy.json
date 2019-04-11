@@ -9,8 +9,8 @@
                 "s3:ListBucketVersions"
             ],
             "Resource": [
-                "***REMOVED***",
-                "***REMOVED***"
+                "arn:aws:s3:::SOURCE-BUCKET-ARN",
+                "arn:aws:s3:::DESTINATION-BUCKET-ARN"
             ]
         },
         {
@@ -20,7 +20,7 @@
                 "s3:GetObject",
                 "s3:GetObjectVersion"
             ],
-            "Resource": "***REMOVED***/*"
+            "Resource": "arn:aws:s3:::SOURCE-BUCKET-ARN/*"
         },
         {
             "Sid": "DestinationBucketPutObjectAccess",
@@ -28,7 +28,7 @@
             "Action": [
                 "s3:PutObject"
             ],
-            "Resource": "***REMOVED***/*"
+            "Resource": "arn:aws:s3:::DESTINATION-BUCKET-ARN/*"
         }
     ]
  }
