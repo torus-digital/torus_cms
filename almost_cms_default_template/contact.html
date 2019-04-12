@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Almost CMS - Contact Us</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- Theme CSS -->
+  <link href="css/contact.css" rel="stylesheet">
+  <link href="css/index.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg fixed-top py-3" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="index.html">
+          <img src="img/almost-logo.svg" height="60" width="auto">
+      </a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="fa fa-lg fa-bars text-primary"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto my-2 my-lg-0">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="articles/index.html">Articles</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="gallery/index.html">Gallery</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="page-heading bg-primary" id="about"> 
+    <div class="container"> 
+      <div class="row justify-content-center"> 
+      </div> 
+    </div> 
+  </section>
+
+  <!-- contact form -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 p-0 text-center">
+          <img class="img-fluid section-img pr-3" src="img/default_img.jpg" alt="" style="height: 100%; object-fit: cover;">
+        </div>
+        <div class="col-lg-6 text-sm-center text-lg-left"> 
+          <div class="container-fluid">
+            <h2 class="text-center mb-4 pt-5">Contact Us</h2>
+            <div class="row">
+              <div class="mx-auto">
+                <form name="sentMessage" id="contactus-form" action="#">
+                  <div class="control-group col-sm-12">
+                    <div class="form-group controls mb-0 pb-2 row">
+                      <div class="col-sm-6 floating-label-form-group pl-0">
+                        <label>First Name</label>
+                        <input class="form-control" id="firstname" type="text" placeholder="First Name" name="firstname" required="required" data-validation-required-message="Porfavor ingrese su nombre.">
+                        <p class="help-block text-danger"></p>
+                      </div>
+                      <div class="col-sm-6 floating-label-form-group">
+                        <label>Last Name</label>
+                        <input class="form-control" id="lastname" type="text" placeholder="Last Name" name="lastname" required="required" data-validation-required-message="Porfavor ingrese su apellido.">
+                        <p class="help-block text-danger"></p>
+                      </div> 
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <div class="form-group floating-label-form-group validate-input controls mb-0 pb-2">
+                      <label>Email</label>
+                      <input class="form-control" id="contact_email" type="email" placeholder="Email" required="required" data-validation-required-message="Porfavor ingrese su correo electronico.">
+                      <p class="help-block text-danger"></p>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                      <label>Phone</label>
+                      <input class="form-control" id="contact_phone" type="tel" placeholder="Phone Number" required="required" data-validation-required-message="Porfavor ingrese su número de telefono.">
+                      <p class="help-block text-danger"></p>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                      <label>Message</label>
+                      <textarea class="form-control" id="contact_message" rows="5" placeholder="Message" required="required" data-validation-required-message="Porfavor ingrese un mensaje"></textarea>
+                      <p class="help-block text-danger"></p>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-sm-12 text-left">
+                      <p id="contact-status" class="sending-text" style="display:none">Gracias por Contactarnos.</p>
+                    </div>
+                  </div>  
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg" id="contact-btn">Send</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    //lambda function URL
+    var URL = "INSERT-YOUR-API-URL-HERE";
+  </script>
+
+  <!-- Footer -->
+  <footer class="bg-light py-5">
+    <div class="container-fluid">
+      <div class="row small text-center text-muted">
+        <div class="col-md-6">
+          <div>Copyright &copy; 2019 - Almost CMS</div>
+        </div>
+        <div class="col-md-6">
+          <div> Powered By <a href="https://github.com/gkpty/almost_cms">Almost CMS</a></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="js/index.js"></script>
+
+</body>
+
+</html>
