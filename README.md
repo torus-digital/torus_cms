@@ -1,6 +1,6 @@
 **Getting Started with almost CMS**
 
-The deployments script is coming soon! It will make the deployment A LOT SHORTER!
+The deployments script is coming soon and it will make the deployment A LOT shorter!
 
       1. prerequisites
       2. Clone github repo
@@ -27,10 +27,11 @@ The deployments script is coming soon! It will make the deployment A LOT SHORTER
 3. Go into the app directory of the project ` cd almost_cms/almost_cms `
 4. Install all dependencies by running ` npm install`
 5. Make sure that amplify installed correctly by running ` amplify `
-    3. If amplify didnt install, run  ` npm install aws-amplify aws-amplify-react` 
-    4. If amplify didnt install, run `  npm install -g @aws-amplify/cli`
+    - In case amplify didnt install, you can run:
+    1. ` npm install aws-amplify aws-amplify-react` 
+    2.  ` npm install -g @aws-amplify/cli`
 6. Configure amplify by running ` amplify configure `
-    5. The following short video [tutorial](https://www.youtube.com/watch?v=fWbM5DLh25U) will help you with the configuration
+    - The following short video [tutorial](https://www.youtube.com/watch?v=fWbM5DLh25U) will help you with the configuration
 7. Initialize a new amplify project inside your react app ` amplify init `
 8. Add authentication ` amplify add auth`
 ![image 1](img/1.png)
