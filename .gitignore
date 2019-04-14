@@ -7,3 +7,4 @@ almost_cms/dist/
 almost_cms/node_modules/
 almost_cms/aws-exports.js
 almost_cms/awsconfiguration.json
+almost_cms/src/aws-exports.js
