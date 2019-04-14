@@ -1,6 +1,6 @@
 **Getting Started with almost CMS**
 
-The deployments script is coming soon and it will make the deployment A LOT shorter!
+The deployments script is coming soon and it will make the installation A LOT shorter!
 
       1. prerequisites
       2. Clone github repo
@@ -90,7 +90,7 @@ When prompted for a schema.graphql file provide the value "schema.graphql" to po
     7. Click on Create Policy.
     8. Next Create a role to use this policy. Go back to the IAM console home
     9. On the sidebar, click on Roles
-    10. Click on Create Roll
+    10. Click on Create Role
     11. Under Choose the service that will use this role, select Lambda
 
     ![image 4](img/4.png)
@@ -104,7 +104,7 @@ When prompted for a schema.graphql file provide the value "schema.graphql" to po
     15. Click on Next: Tags
     16. Click on Next: Review
     17. Give Your Role a name and optionally a description.
-    18. Click on Create Roll
+    18. Click on Create Role
 
 14. Now your ready to deploy your lambda copyToBucket function.
     1. In the AWS console, go to Services -> [Lambda](https://console.aws.amazon.com/lambda)
