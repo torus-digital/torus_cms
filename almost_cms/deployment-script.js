@@ -4,7 +4,7 @@ require('dotenv').load();
 var AWS = require('aws-sdk');
 
 // Load credentials and set region from JSON file
-//AWS.config.loadFromPath('./config.json');
+// AWS.config.loadFromPath('./config.json');    //Currently loading from env file
 
 // Create S3 service object
 s3 = new AWS.S3({apiVersion: '2006-03-01'});
@@ -82,7 +82,6 @@ s3.createBucket(bucketParams, function(err, data) {
   }
 });
 
-
 // Create Route53 Hosted Zone
 var call_ref = new Date().toString();
 
@@ -100,10 +99,7 @@ route53.createHostedZone(params, function(err, data) {
 	} 
 	else {
 		console.log(data); // successful response
-		console.log(data.HostedZoneId); // successful response
-		console.log(data.HostedZone.Id); // successful response
 		const hosted_id = data.HostedZone.Id.slice(data.HostedZone.Id.lastIndexOf('/') + 1);
-		console.log(hosted_id); // successful response
 
 		// Create the Alias A record for the root bucket
 		var params = {
