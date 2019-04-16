@@ -96,7 +96,7 @@ When prompted for a schema.graphql file provide the value "schema.graphql" to po
     ![image 4](img/4.png)
 
     12. Click on Next: Permissions
-    13. Search for your newly created function
+    13. Search for your newly created IAM policy
     14. Select the checkbox beside it
 
     ![image 5](img/5.png)
