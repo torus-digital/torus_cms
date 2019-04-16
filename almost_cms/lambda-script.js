@@ -1,5 +1,6 @@
 //load files from the .env file
 require('dotenv').load();
+const fs = require('fs');
 
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
@@ -47,20 +48,7 @@ const copyPolicy = (
     }`
 );
 
-const trustRel = (
-    `{
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Service": "lambda.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-          }
-        ]
-    }`
-);
+const trustRel =`{"Version": "2012-10-17","Statement": [{"Effect": "Allow","Principal": {"Service": "lambda.amazonaws.com"},"Action": "sts:AssumeRole"}]}`;
 
 const lambdaFunction = (
     `// Load the AWS SDK
@@ -110,7 +98,7 @@ var policyParams = {
     } 
     else {
         console.log(data);
-
+        var policyArn = data.Policy.Arn;
         //CREATE THE IAM ROLE
         var rolParams = {
             AssumeRolePolicyDocument: trustRel, /* required */
@@ -130,41 +118,59 @@ var policyParams = {
         else {
             console.log(data);
             const rolArn = data.Role.Arn;
+            const rolName = data.Role.RoleName;
+            console.log(rolName);
             console.log(rolArn);
 
-            // CREATE THE LAMBDA FUNCTION
-            var funcParams = {
-                Code: {
-                    ZipFile: lambdaFunction 
-                }, 
-                Description: "This Lambda Function Allows you to copy objects from one bucket to another", 
-                FunctionName: `almostCopyFunction${uniqNow}`, 
-                Handler: "index.handler",
-                MemorySize: 128, 
-                Publish: true, 
-                Role: rolArn,
-                Runtime: "nodejs8.10", 
-                Timeout: 30, 
-                VpcConfig: {}
-            };
-            lambda.createFunction(funcParams, function(err, data) {
-                if (err) {
-                    console.log(err, err.stack); 
-                }
-                else {
-                    console.log(data);
-                }
-            });
+            //ATTACH THE IAM POLICY TO THE NEW ROLE
+            var attachParams = {
+                PolicyArn: policyArn, 
+                RoleName: rolName
+               };
+               iam.attachRolePolicy(attachParams, function(err, data) {
+                    if (err) {
+                        console.log(err, err.stack);
+                    } 
+                    else {
+                        console.log(data);
+                        // CREATE THE LAMBDA FUNCTION
+                        setTimeout(
+                            function createCopyFunc(){
 
-
+                                console.log("ROLE ARN: ", rolArn)
+                                var funcParams = {
+                                    Code: {
+                                        ZipFile: fs.readFileSync('../copyFunction.zip') 
+                                    }, 
+                                    Description: "This Lambda Function Allows you to copy objects from one bucket to another", 
+                                    FunctionName: `almostCopyFunction${uniqNow}`, 
+                                    Handler: "copyFunction.handler",
+                                    MemorySize: 128, 
+                                    Publish: true, 
+                                    Role: rolArn,
+                                    Runtime: "nodejs8.10", 
+                                    Timeout: 30,
+                                    Environment: {
+                                        Variables: {
+                                        'SOURCE_BUCKET': process.argv[3],
+                                        'DEST_BUCKET': process.argv[2],
+                                        }
+                                    },    
+                                };
+                                lambda.createFunction(funcParams, function(err, data) {
+                                    if (err) {
+                                        console.log(err, err.stack); 
+                                    }
+                                    else {
+                                        console.log(data);
+                                    }
+                                });
+                            }, 10000);
+                    }     
+               });
         }
     });
     }     
 });
-
-
-
-
-
 
 
