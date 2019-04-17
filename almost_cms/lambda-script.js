@@ -10,6 +10,7 @@ var AWS = require('aws-sdk');
 
 var iam = new AWS.IAM({apiVersion: '2010-05-08'});
 var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+var apigateway = new AWS.APIGateway({apiVersion: '2015-07-09'});
 
 const copyPolicy = (
     `{
@@ -49,38 +50,6 @@ const copyPolicy = (
 );
 
 const trustRel =`{"Version": "2012-10-17","Statement": [{"Effect": "Allow","Principal": {"Service": "lambda.amazonaws.com"},"Action": "sts:AssumeRole"}]}`;
-
-const lambdaFunction = (
-    `// Load the AWS SDK
-    const aws = require('aws-sdk');
-    
-    // Construct the AWS S3 Object - http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#constructor-property
-    const s3 = new aws.S3({
-        apiVersion: '2006-03-01'
-     });
-            
-    // Define 2 new variables for the source and destination buckets
-    var srcBucket = "${process.argv[3]}";
-    var destBucket = "${process.argv[2]}/";
-    
-    //Main function
-    exports.handler = (event, context, callback) => {
-            
-    //Copy the current object to the destination bucket - http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#copyObject-property
-    s3.copyObject({ 
-        CopySource: srcBucket + '/' + event.sourceRoute + '/' + event.sourceObject,
-        Bucket: destBucket + event.destRoute,
-        Key: event.sourceObject
-        }, function(copyErr, copyData){
-           if (copyErr) {
-                console.log("Error: " + copyErr);
-             } else {
-                console.log('Copied OK');
-             } 
-        });
-      callback(null, 'All done!');
-    };`
-);
 
 const uniqNow = new Date().toISOString().replace(/-/, '').replace(/-/, '').replace(/T/, '').replace(/\..+/, '').replace(/:/, '').replace(/:/, '');
 console.log(uniqNow);
@@ -163,6 +132,11 @@ var policyParams = {
                                     }
                                     else {
                                         console.log(data);
+                                        const copyFuncArn = data.FunctionArn;
+                                        const copyFuncName = data.FunctionName;
+                                        console.log(copyFuncArn);      
+                                        //CREATE THE API
+                                        createApi(copyFuncArn);
                                     }
                                 });
                             }, 10000);
@@ -174,3 +148,118 @@ var policyParams = {
 });
 
 
+//CREATE THE API
+function createApi(arn) {
+    var params = {
+        name: `almostCopyApi${uniqNow}`, /* required */
+        apiKeySource: 'HEADER',
+        description: 'The REST API for the lambda copy function',
+        endpointConfiguration: {
+          types: [
+            'REGIONAL'
+          ]
+        },
+        version: uniqNow
+      };
+      apigateway.createRestApi(params, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+        } 
+        else {
+            console.log(data);
+            const rest_api_id = data.id;
+            //const rest_api_name = data.name
+            console.log("REST API ID: ", rest_api_id)
+            setTimeout(
+                function setRestApi(){
+                    //GET PARENT ID
+                    var params = {
+                        restApiId: rest_api_id, /* required */
+                      };
+                      apigateway.getResources(params, function(err, data) {
+                        if (err) {
+                            console.log(err, err.stack); // an error occurred
+                        }
+                        else {
+                            
+                            const parent_id = data.items[0].id;
+                            console.log("RESOUCRES: ", parent_id);
+
+                            //CREATE THE RESOURCE
+                            var resourceParams = {
+                                parentId: parent_id, /* required */
+                                pathPart: 'post', /* required */
+                                restApiId: rest_api_id, /* required */
+                            };
+                            apigateway.createResource(resourceParams, function(err, data) {
+                                if (err) {
+                                    console.log(err, err.stack);
+                                }
+                                else {
+                                    console.log(data);
+                                    const resource_id = data.id
+                                    console.log("RESOURCE ID: ", resource_id)
+                                    
+                                    //CREATE THE POST METHOD
+                                    var params = {
+                                        authorizationType: 'NONE', /* required */
+                                        httpMethod: 'POST', /* required */
+                                        resourceId: resource_id, /* required */
+                                        restApiId: rest_api_id, /* required */
+                                        apiKeyRequired: false,
+                                    };
+                                    apigateway.putMethod(params, function(err, data) {
+                                        if (err) {
+                                            console.log(err, err.stack);
+                                        } 
+                                        else {
+                                            console.log(data);
+                    
+                                            //CREATE THE INTEGRATION WITH THE LAMBDA FUNCTION
+                                            var params = {
+                                                httpMethod: 'POST', /* required */
+                                                integrationHttpMethod: 'POST',
+                                                resourceId: resource_id, /* required */
+                                                restApiId: rest_api_id, /* required */
+                                                type: 'AWS', /* required */
+                                                uri: `arn:aws:apigateway:${process.env.AWS_REGION}:lambda:path/2015-03-31/functions/${arn}/invocations`
+                                            };
+                                            apigateway.putIntegration(params, function(err, data) {
+                                                if (err) {
+                                                    console.log(err, err.stack);
+                                                }
+                                                else {
+                                                    console.log(data);
+                                                    //CREATE THE DEPLOYMENT
+                                                    var params = {
+                                                        restApiId: rest_api_id, /* required */
+                                                        description: 'deployment for the REST API for the lambda copy function',
+                                                        stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
+                                                        stageName: `deployment${uniqNow}`,
+                                                    };
+                                                    apigateway.createDeployment(params, function(err, data) {
+                                                        if (err) {
+                                                            console.log(err, err.stack);
+                                                        }
+                                                        else {
+                                                            console.log(data);
+                                                        }
+                                                    });
+                                                }     
+                                            });
+                                        }
+                                    });
+                                }    
+                            });   
+                        }                
+                      });
+                    
+                }, 5000)         
+        }     
+      });
+}
+
+
+  
+
+  

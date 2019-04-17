@@ -11,6 +11,8 @@ const s3 = new aws.S3({
 // Define 2 new variables for the source and destination buckets
 var srcBucket = process.env.SOURCE_BUCKET;
 var destBucket = process.env.DEST_BUCKET;
+console.log("Source Bucket: ", process.env.SOURCE_BUCKET);
+console.log("Destination Bucket: ", process.env.DEST_BUCKET);
 
 //Main function
 exports.handler = (event, context, callback) => {     
@@ -28,3 +30,5 @@ exports.handler = (event, context, callback) => {
       });
    callback(null, 'Success');
 };
+
+
