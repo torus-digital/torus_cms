@@ -136,7 +136,8 @@ var policyParams = {
                                         const copyFuncName = data.FunctionName;
                                         console.log(copyFuncArn);      
                                         //CREATE THE API
-                                        createApi(copyFuncArn);
+                                        createApi(copyFuncArn, copyFuncName);
+                                        
                                     }
                                 });
                             }, 10000);
@@ -149,7 +150,7 @@ var policyParams = {
 
 
 //CREATE THE API
-function createApi(arn) {
+function createApi(arn, funcName) {
     var params = {
         name: `almostCopyApi${uniqNow}`, /* required */
         apiKeySource: 'HEADER',
@@ -170,91 +171,115 @@ function createApi(arn) {
             const rest_api_id = data.id;
             //const rest_api_name = data.name
             console.log("REST API ID: ", rest_api_id)
-            setTimeout(
-                function setRestApi(){
-                    //GET PARENT ID
-                    var params = {
-                        restApiId: rest_api_id, /* required */
-                      };
-                      apigateway.getResources(params, function(err, data) {
-                        if (err) {
-                            console.log(err, err.stack); // an error occurred
-                        }
-                        else {
+            
+            //GET PARENT ID
+            var params = {
+                restApiId: rest_api_id, /* required */
+                };
+                apigateway.getResources(params, function(err, data) {
+                if (err) {
+                    console.log(err, err.stack); // an error occurred
+                }
+                else {
+                    
+                    const parent_id = data.items[0].id;
+                    console.log("RESOUCRES: ", parent_id);
+                  
                             
-                            const parent_id = data.items[0].id;
-                            console.log("RESOUCRES: ", parent_id);
-
-                            //CREATE THE RESOURCE
-                            var resourceParams = {
-                                parentId: parent_id, /* required */
-                                pathPart: 'post', /* required */
+                            //CREATE THE POST METHOD
+                            var params = {
+                                authorizationType: 'NONE', /* required */
+                                httpMethod: 'POST', /* required */
+                                resourceId: parent_id, /* required */
                                 restApiId: rest_api_id, /* required */
+                                apiKeyRequired: false,
                             };
-                            apigateway.createResource(resourceParams, function(err, data) {
+                            apigateway.putMethod(params, function(err, data) {
                                 if (err) {
                                     console.log(err, err.stack);
-                                }
+                                } 
                                 else {
                                     console.log(data);
-                                    const resource_id = data.id
-                                    console.log("RESOURCE ID: ", resource_id)
-                                    
-                                    //CREATE THE POST METHOD
+            
+                                    //CREATE THE INTEGRATION WITH THE LAMBDA FUNCTION
                                     var params = {
-                                        authorizationType: 'NONE', /* required */
                                         httpMethod: 'POST', /* required */
-                                        resourceId: resource_id, /* required */
+                                        integrationHttpMethod: 'POST',
+                                        resourceId: parent_id, /* required */
                                         restApiId: rest_api_id, /* required */
-                                        apiKeyRequired: false,
+                                        type: 'AWS', /* required */
+                                        uri: `arn:aws:apigateway:${process.env.AWS_REGION}:lambda:path/2015-03-31/functions/${arn}/invocations`
                                     };
-                                    apigateway.putMethod(params, function(err, data) {
+                                    apigateway.putIntegration(params, function(err, data) {
                                         if (err) {
                                             console.log(err, err.stack);
-                                        } 
+                                        }
                                         else {
                                             console.log(data);
-                    
-                                            //CREATE THE INTEGRATION WITH THE LAMBDA FUNCTION
+
+                                            // ASSIGN LAMBDA THE POLICY 
                                             var params = {
-                                                httpMethod: 'POST', /* required */
-                                                integrationHttpMethod: 'POST',
-                                                resourceId: resource_id, /* required */
+                                            Action: "lambda:InvokeFunction", 
+                                            FunctionName: funcName, 
+                                            Principal: "apigateway.amazonaws.com", 
+                                            SourceArn: `arn:aws:execute-api:us-east-1:519275522978:${rest_api_id}/*/POST/`,
+                                            StatementId: `ID-${uniqNow}`
+                                           };
+                                           lambda.addPermission(params, function(err, data) {
+                                             if (err) console.log(err, err.stack); // an error occurred
+                                             else     console.log(data);           // successful response
+                                           });
+
+                                            //CREATE THE DEPLOYMENT
+                                            var params = {
                                                 restApiId: rest_api_id, /* required */
-                                                type: 'AWS', /* required */
-                                                uri: `arn:aws:apigateway:${process.env.AWS_REGION}:lambda:path/2015-03-31/functions/${arn}/invocations`
+                                                description: 'deployment for the REST API for the lambda copy function',
+                                                stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
+                                                stageName: `deployment${uniqNow}`,
                                             };
-                                            apigateway.putIntegration(params, function(err, data) {
+                                            apigateway.createDeployment(params, function(err, data) {
                                                 if (err) {
                                                     console.log(err, err.stack);
                                                 }
                                                 else {
                                                     console.log(data);
-                                                    //CREATE THE DEPLOYMENT
+                                                    //CREATE PUT METHOD RESPONSE
                                                     var params = {
+                                                        httpMethod: 'POST', /* required */
+                                                        resourceId: parent_id, /* required */
                                                         restApiId: rest_api_id, /* required */
-                                                        description: 'deployment for the REST API for the lambda copy function',
-                                                        stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
-                                                        stageName: `deployment${uniqNow}`,
-                                                    };
-                                                    apigateway.createDeployment(params, function(err, data) {
+                                                        statusCode: '200', /* required */
+                                                      };
+                                                      apigateway.putMethodResponse(params, function(err, data) {
                                                         if (err) {
                                                             console.log(err, err.stack);
-                                                        }
+                                                        } 
                                                         else {
                                                             console.log(data);
-                                                        }
-                                                    });
-                                                }     
+                                                            //CREATE INTEGRATION RESPONSE
+                                                            var params = {
+                                                                httpMethod: 'POST', /* required */
+                                                                resourceId: parent_id, /* required */
+                                                                restApiId: rest_api_id, /* required */
+                                                                statusCode: '200', /* required */
+                                                              };
+                                                              apigateway.putIntegrationResponse(params, function(err, data) {
+                                                                if (err) console.log(err, err.stack); // an error occurred
+                                                                else     console.log(data);           // successful response
+                                                              });
+
+                                                        }            
+                                                      });
+                                                }
                                             });
-                                        }
+                                        }     
                                     });
-                                }    
-                            });   
-                        }                
-                      });
-                    
-                }, 5000)         
+                             
+                        }    
+                    });   
+                }                
+                });             
+                       
         }     
       });
 }

@@ -1,5 +1,3 @@
-//load files from the .env file
-require('dotenv').load();
 // Load the AWS SDK
 const aws = require('aws-sdk');
 
@@ -10,25 +8,21 @@ const s3 = new aws.S3({
         
 // Define 2 new variables for the source and destination buckets
 var srcBucket = process.env.SOURCE_BUCKET;
-var destBucket = process.env.DEST_BUCKET;
-console.log("Source Bucket: ", process.env.SOURCE_BUCKET);
-console.log("Destination Bucket: ", process.env.DEST_BUCKET);
+var destBucket = process.env.DEST_BUCKET + '/';
 
 //Main function
 exports.handler = (event, context, callback) => {     
 //Copy the current object to the destination bucket
    s3.copyObject({ 
       CopySource: srcBucket + '/' + event.sourceRoute + '/' + event.sourceObject,
-      Bucket: destBucket + event.destRoute,
+      Bucket: destBucket +  event.destRoute,
       Key: event.sourceObject
       }, function(copyErr, copyData){
          if (copyErr) {
             console.log("Error: " + copyErr);
          } else {
-            console.log('Copied OK');
+            console.log('Success');
          } 
       });
-   callback(null, 'Success');
+   callback(null, 'All Done!');
 };
-
-
