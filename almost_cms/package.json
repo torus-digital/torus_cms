@@ -11,6 +11,7 @@
     "draftjs-to-html": "^0.8.4",
     "graphql": "^14.2.1",
     "graphql-tag": "^2.10.1",
+    "open": "^6.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draft-wysiwyg": "^1.13.2",

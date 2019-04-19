@@ -1,9 +1,32 @@
-const opn = require('opn');
+//load files from the .env file
+require('dotenv').load();
+
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+
+// Load credentials and set region from JSON file
+// AWS.config.loadFromPath('./config.json');    
+// Currently loading from env file
+
+// Load the other scripts
+var websiteScript = require('./website-script')
+
+// Create S3 service object
+s3 = new AWS.S3({apiVersion: '2006-03-01'});
+route53 = new AWS.Route53({apiVersion: '2013-04-01'});
+const path = require("path");
+const fs = require('fs');
+
+// Package to open browser window
+const open = require('open');
+
+// package to use stdin/out
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
 })
 
+//converts console input to y and n
 function convertInput(input) {
     var mininput =  input.toLowerCase()
     if (mininput == 'y' || mininput == 'yes') {
@@ -17,7 +40,6 @@ function convertInput(input) {
     }
     return output;
 }
-
 
 function stmt1(){
     readline.question(`Want to deploy a new static website? [Y/n]`, (res) => {
@@ -61,7 +83,9 @@ function stmt3(){
             case 'n':
                 console.log(`please create a new IAM user and enter the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables`)
                 console.log(`for more info check out https://github.com/gkpty/almost_cms`);
-                //opn('https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new?step=details');
+                (async () => {
+                    await open('https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new?step=details');
+                })();
                 stmt5();
                 break;
             default:
@@ -76,7 +100,7 @@ function stmt4(){
         switch(convertInput(res4)) {
             case 'y':
                 // EXECUTE THE WEBSITE FUNCTION
-                console.log('EXECUTE THE WEBSITE FUNCTION');
+                siteFunc();
                 console.log('Please Re-run the deployment script and select no for the first option');
                 readline.close();
                 break;
@@ -95,14 +119,12 @@ function stmt4(){
     });
 }
 
-
 function stmt5(){
     readline.question(`Have you finished configuring the env variables? [Y/n]`, (res5) => {
         switch(convertInput(res5)) {
             case 'y':
                 // EXECUTE THE WEBSITE FUNCTION
-                console.log('EXECUTE THE WEBSITE FUNCTION');
-                readline.close();
+                siteFunc();
                 break;
             default:
                 console.log('please enter a valid yes/no response');
@@ -134,6 +156,23 @@ function sitebackend(){
         }
     }); 
 }
+
+function siteFunc() {
+    readline.question(`Please enter the domain name of your site ex. yourdomain.com `, (domainName) => {
+        if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(domainName)) {
+            console.log("Valid Domain Name");
+            websiteScript.script(s3, route53, path, fs, domainName);
+            readline.close();
+        } else {
+            console.log("Enter Valid Domain Name");
+            siteFunc();
+        }
+    });
+}
+
+
+    
+
 
 
 console.log('Hi, welcome to the almost installer!');
