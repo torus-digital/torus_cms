@@ -9,11 +9,17 @@ var AWS = require('aws-sdk');
 // Currently loading from env file
 
 // Load the other scripts
-var websiteScript = require('./website-script')
+var websiteScript = require('./website-script');
+var lambdaScript = require('./lambda-script');
 
-// Create S3 service object
+// Create S3 service objects
 s3 = new AWS.S3({apiVersion: '2006-03-01'});
 route53 = new AWS.Route53({apiVersion: '2013-04-01'});
+var iam = new AWS.IAM({apiVersion: '2010-05-08'});
+var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+var apigateway = new AWS.APIGateway({apiVersion: '2015-07-09'});
+
+// interact with fs
 const path = require("path");
 const fs = require('fs');
 
@@ -24,7 +30,7 @@ const open = require('open');
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
-})
+});
 
 //converts console input to y and n
 function convertInput(input) {
@@ -40,6 +46,17 @@ function convertInput(input) {
     }
     return output;
 }
+
+// ADD THE DOMAIN NAME TO THE VARIABLES.JSON FILE
+function addVars(jsonVar, jsonVal){
+    let rawdata = fs.readFileSync('variables.json');  
+    obj = JSON.parse(rawdata);
+    obj[jsonVar] = jsonVal;
+    jsonObj = JSON.stringify(obj);
+    fs.writeFileSync('variables.json', jsonObj);
+    console.log('saved your public site name in the variables.json file')
+}
+ 
 
 function stmt1(){
     readline.question(`Want to deploy a new static website? [Y/n]`, (res) => {
@@ -137,10 +154,7 @@ function sitebackend(){
     readline.question(`Have you already configured Amplify? [Y/n]`, (res6) => {
         switch(convertInput(res6)) {
             case 'y':
-                console.log('Deploying your backend...');
-                // EXECUTE THE LAMBDA SCRIPT
-                console.log('EXECUTE THE LAMBDA SCRIPT')
-                readline.close();
+                storBkt();
                 break;
             case 'n':
                 console.log('Please configure Amplify');
@@ -161,6 +175,7 @@ function siteFunc() {
     readline.question(`Please enter the domain name of your site ex. yourdomain.com `, (domainName) => {
         if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(domainName)) {
             console.log("Valid Domain Name");
+            addVars('public_site', domainName);
             websiteScript.script(s3, route53, path, fs, domainName);
             readline.close();
         } else {
@@ -170,10 +185,22 @@ function siteFunc() {
     });
 }
 
-
-    
-
-
+function storBkt() {
+    readline.question(`Enter the name of your storage bucket created by Amplify `, (storBktName) => {
+        if (storBktName.length < 1) {
+            console.log("Please enter a valid bucket Name");
+            storBkt();
+        } else {
+            addVars('storage_bucket', storBktName);
+            let rawdata = fs.readFileSync('variables.json');  
+            obj = JSON.parse(rawdata);
+            const savedDomain = obj.public_bucket;
+            console.log('Deploying your backend...');
+            lambdaScript.script(iam, fs, lambda, apigateway, savedDomain, storBktName);
+            readline.close();
+        }
+    });
+}
 
 console.log('Hi, welcome to the almost installer!');
 stmt1();
