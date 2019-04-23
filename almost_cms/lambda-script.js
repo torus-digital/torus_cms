@@ -196,7 +196,7 @@ function createApi(arn, funcName) {
                                         Action: "lambda:InvokeFunction", 
                                         FunctionName: funcName, 
                                         Principal: "apigateway.amazonaws.com", 
-                                        SourceArn: `arn:aws:execute-api:${process.env.AWS_REGION}:519275522978:${rest_api_id}/*/POST/`,
+                                        SourceArn: `arn:aws:execute-api:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:${rest_api_id}/*/POST/`,
                                         StatementId: `ID-${uniqNow}`
                                         };
                                         lambda.addPermission(params, function(err, data) {
@@ -249,7 +249,7 @@ function createApi(arn, funcName) {
                                                                 console.log(err, err.stack);
                                                             }
                                                             else {
-                                                                console.log('All done! Please run amplify publish');
+                                                                console.log('All done! Please run amplify hosting add and amplify publish');
                                                             }     
                                                         });
                                                     }            

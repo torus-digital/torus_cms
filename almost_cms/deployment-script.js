@@ -48,12 +48,12 @@ function convertInput(input) {
 }
 
 // ADD THE VALUES TO THE VARIABLES.JSON FILE
-function addVars(jsonVar, jsonVal){
-    let rawdata = fs.readFileSync('variables.json');  
+function addVars(jsonVar, jsonVal, jsonDir){
+    let rawdata = fs.readFileSync(jsonDir);  
     obj = JSON.parse(rawdata);
     obj[jsonVar] = jsonVal;
     jsonObj = JSON.stringify(obj);
-    fs.writeFileSync('variables.json', jsonObj);
+    fs.writeFileSync(jsonDir, jsonObj);
     console.log('saved your public site name in the variables.json file')
 }
  
@@ -78,7 +78,6 @@ function stmt2(){
     readline.question(`I guess you want to install a backend for an existing static website [Y/n]`, (res2) => {
         switch(convertInput(res2)) {
             case 'y':
-                // please enter the name of your static website
                 stmt6();
                 break;
             case 'n':
@@ -123,10 +122,11 @@ function stmt4(){
                 break;
             case 'n':
                 console.log('Please configure Amplify');
-                console.log('run: amplify init');
                 console.log('run: amplify configure');
-                console.log('Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables with the credentials of the IAM user created for Amplify');
-                console.log('then re-run the deployment script.')
+                console.log('run: amplify init');  
+                console.log('Add AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY env variables with the credentials of the IAM user created for Amplify');
+                console.log('Add a AWS_REGION env variable with your selected region i.e. us-east-1');
+                console.log('re-run the deployment script.')
                 readline.close();
                 break;
             default:
@@ -153,7 +153,8 @@ function stmt6(){
     readline.question(`Please enter the domain name of your site ex. yourdomain.com `, (domainName) => {
         if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(domainName)) {
             console.log("Valid Domain Name");
-            addVars('public_site', domainName);
+            addVars('public_site', domainName, 'variables.json');
+            //addVars('bucketName', `admin.${domainName}`, 'amplify/backend/hosting/S3AndCloudFront/parameters.json');
             sitebackend();
         }
         else {
@@ -189,7 +190,7 @@ function siteFunc(cond) {
     readline.question(`Please enter the domain name of your site ex. yourdomain.com `, (domainName) => {
         if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(domainName)) {
             console.log("Valid Domain Name");
-            addVars('public_site', domainName);
+            addVars('public_site', domainName, 'variables.json');
             websiteScript.script(s3, route53, path, fs, domainName);
             if (cond) {
                 readline.close();
@@ -207,10 +208,11 @@ function storBkt() {
             console.log("Please enter a valid bucket Name");
             storBkt();
         } else {
-            addVars('storage_bucket', storBktName);
+            addVars('storage_bucket', storBktName, 'variables.json');
+            //addVars('storage_bucket', storBktName, 'variables.json');
             let rawdata = fs.readFileSync('variables.json');  
             obj = JSON.parse(rawdata);
-            const savedDomain = obj.public_bucket;
+            const savedDomain = obj.public_site;
             console.log('Deploying your backend...');
             lambdaScript.script(iam, fs, lambda, apigateway, savedDomain, storBktName);
             readline.close();
