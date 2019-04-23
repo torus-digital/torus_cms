@@ -35,13 +35,11 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 	if (err) {
 		console.log("Error", err);
 	} else {
-		console.log("Bucket URL is ", data.Location);
+		console.log("Root Bucket URL is ", data.Location);
 		s3.putBucketWebsite(staticHostParams, function(err, data) {
 		if (err) {
 			console.log("Error", err);
 		} else {
-					console.log("Success", data);
-
 					//ATTACH THE PUBLIC BUCKET POLICY
 					var params = {
 						Bucket: domainName, 
@@ -53,68 +51,67 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 						} 
 						else{
 							console.log("public bucket policy attached")
-							console.log(data);
 						}     
 					});
 					
 					//UPLOAD THE WEBSITE TEMPLATE TO THE S3 BUCKET
 					const uploadDir = function(s3Path, bucketName) {		
 						function walkSync(currentDirPath, callback) {
-								fs.readdirSync(currentDirPath).forEach(function (name) {
-										var filePath = path.join(currentDirPath, name);
-										var stat = fs.statSync(filePath);
-										if (stat.isFile()) {
-												callback(filePath, stat);
-										} 
-										else if (stat.isDirectory()) {
-												walkSync(filePath, callback);
-										}
-								});
+							fs.readdirSync(currentDirPath).forEach(function (name) {
+									var filePath = path.join(currentDirPath, name);
+									var stat = fs.statSync(filePath);
+									if (stat.isFile()) {
+											callback(filePath, stat);
+									} 
+									else if (stat.isDirectory()) {
+											walkSync(filePath, callback);
+									}
+							});
 						}			
 						walkSync(s3Path, function(filePath, stat) {
-								let bucketPath = filePath.substring(s3Path.length+1);
-								let fext = bucketPath.substring(bucketPath.lastIndexOf('.') + 1);
-								let content_type = '';
-								if(fext =='svg'){
-										content_type = 'image/svg+xml'
+							let bucketPath = filePath.substring(s3Path.length+1);
+							let fext = bucketPath.substring(bucketPath.lastIndexOf('.') + 1);
+							let content_type = '';
+							if(fext =='svg'){
+									content_type = 'image/svg+xml'
+							}
+							else if(fext =='jpg' || fext =='jpeg'){
+									content_type = 'image/jpeg'
+							}
+							else if(fext =='png'){
+									content_type = 'image/png'
+							}
+							else if(fext =='html'){
+									content_type = 'text/html'
+							}
+							else if(fext =='css'){
+									content_type = 'text/css'
+							}
+							else if(fext =='js'){
+									content_type = 'application/javascript'
+							}
+							else if(fext =='txt'){
+									content_type = 'text/plain'
+							}
+							else if(fext =='xml'){
+									content_type = 'text/xml'
+							}
+							else if(fext =='mp4'){
+									content_type = 'video/mp4'
+							}        
+							let fileParams = {Bucket: bucketName, Key: bucketPath, Body: fs.readFileSync(filePath), ContentType: content_type};
+							s3.putObject(fileParams, function(err, data) {
+								if (err) {
+									console.log(err)
+								} 
+								else {
+									console.log(`Successfully uploaded ${bucketPath} to ${bucketName}`);
 								}
-								else if(fext =='jpg' || fext =='jpeg'){
-										content_type = 'image/jpeg'
-								}
-								else if(fext =='png'){
-										content_type = 'image/png'
-								}
-								else if(fext =='html'){
-										content_type = 'text/html'
-								}
-								else if(fext =='css'){
-										content_type = 'text/css'
-								}
-								else if(fext =='js'){
-										content_type = 'application/javascript'
-								}
-								else if(fext =='txt'){
-										content_type = 'text/plain'
-								}
-								else if(fext =='xml'){
-										content_type = 'text/xml'
-								}
-								else if(fext =='mp4'){
-										content_type = 'video/mp4'
-								}        
-								let fileParams = {Bucket: bucketName, Key: bucketPath, Body: fs.readFileSync(filePath), ContentType: content_type};
-								s3.putObject(fileParams, function(err, data) {
-										if (err) {
-												console.log(err)
-										} 
-										else {
-												console.log('Successfully uploaded '+ bucketPath +' to ' + bucketName);
-										}
-								});
+							});
 						});
 					};			
 					uploadDir("../website_template", domainName);
-					
+
 					// CREATE THE WWW REROUTE BUCKET
 					var wbucketParams = {
 						Bucket : wname,
@@ -132,13 +129,12 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 						if (err) {
 							console.log("Error", err);
 						} else {
-							console.log("Bucket URL is ", data.Location);
+							console.log("WWW Bucket URL is ", data.Location);
 							s3.putBucketWebsite(wstaticHostParams, function(err, data) {
 								if (err) {
 									console.log("Error", err);
 								} 
 								else {
-									console.log("Success", data);
 									// Create Route53 Hosted Zone
 									var call_ref = new Date().toString();
 
@@ -155,8 +151,10 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 											console.log(err, err.stack);
 										} 
 										else {
-											console.log(data);
+											console.log('In your Domain name registrar, please change your DNS settings to custom DNS and add the following Nameservers:')
+											console.log(data.DelegationSet.NameServers);
 											const hosted_id = data.HostedZone.Id.slice(data.HostedZone.Id.lastIndexOf('/') + 1);
+
 
 											// Create the Alias A record for the root bucket
 											var aliasParams = {
@@ -165,7 +163,7 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 														Action: "CREATE", 
 														ResourceRecordSet: {
 															AliasTarget: {
-																DNSName: "s3-website-us-east-1.amazonaws.com", 
+																DNSName: `s3-website-${process.env.AWS_REGION}.amazonaws.com`, 
 																EvaluateTargetHealth: false, 
 																HostedZoneId: 'Z3AQBSTGFYJSTF' // a code depending on your region and resource for more info refer to https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_website_region_endpoints
 															}, 
@@ -182,38 +180,38 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 													console.log(err, err.stack);
 												} 
 												else {
-													console.log(data);
-												}
-											});
-
-											//Create the Alias A record for the www bucket
-											var waliasParams = {
-												ChangeBatch: {
-													Changes: [{
-														Action: "CREATE", 
-														ResourceRecordSet: {
-															AliasTarget: {
-																DNSName: "s3-website-us-east-1.amazonaws.com", 
-																EvaluateTargetHealth: false, 
-																HostedZoneId: 'Z3AQBSTGFYJSTF' // a code depending on your region and resource for more info refer to https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_website_region_endpoints
-															}, 
-															Name: wname, 
-															Type: "A"
+													console.log('Succesfully created the alias A record for the root bucket');
+													//Create the Alias A record for the www bucket
+													var waliasParams = {
+														ChangeBatch: {
+															Changes: [{
+																Action: "CREATE", 
+																ResourceRecordSet: {
+																	AliasTarget: {
+																		DNSName: `s3-website-${process.env.AWS_REGION}.amazonaws.com`, 
+																		EvaluateTargetHealth: false, 
+																		HostedZoneId: 'Z3AQBSTGFYJSTF' // a code depending on your region and resource for more info refer to https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_website_region_endpoints
+																	}, 
+																	Name: wname, 
+																	Type: "A"
+																}
+															}], 
+															Comment: "Alias Record for S3 Bucket"
+														}, 
+														HostedZoneId: hosted_id // the Id of your recently created hosted zone
+													};
+													route53.changeResourceRecordSets(waliasParams, function(err, data) {
+														if (err) {
+															console.log(err, err.stack);
+														} 
+														else {
+															console.log('Succesfully created the alias A record for the www bucket');
+															console.log('Please wait a couple of seconds ...')
 														}
-													}], 
-													Comment: "Alias Record for S3 Bucket"
-												}, 
-												HostedZoneId: hosted_id // the Id of your recently created hosted zone
-											};
-											route53.changeResourceRecordSets(waliasParams, function(err, data) {
-												if (err) {
-													console.log(err, err.stack);
-												} 
-												else {
-													console.log(data);
+													});
 												}
 											});
-
+											
 										}
 									});
 								}
@@ -221,10 +219,9 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 						}
 
 					});
-
+				}
+			});
 		}
-		});
-	}
 	});
 }
 

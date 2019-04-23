@@ -44,13 +44,12 @@ exports.script = function lambdaScript(iam, fs, lambda, apigateway, domainName, 
         PolicyName: `almostCopyPolicy${uniqNow}`, /* required */
         Description: 'the IAM policy that allows the role to communicate with your sotrage and public buckets'
     };
-    console.log("unique Now ", uniqNow)
     iam.createPolicy(policyParams, function(err, data) {
         if (err){
             console.log(err, err.stack);
         } 
         else {
-            console.log(data);
+            console.log('Succesfully created the IAM policy: ', data.Policy.PolicyName);
             var policyArn = data.Policy.Arn;
             
             // CREATE THE IAM ROLE
@@ -70,11 +69,9 @@ exports.script = function lambdaScript(iam, fs, lambda, apigateway, domainName, 
                 console.log(err, err.stack);
             }
             else {
-                console.log(data);
+                console.log('Succesfully created the IAM Role: ', data.RoleName);
                 const rolArn = data.Role.Arn;
                 const rolName = data.Role.RoleName;
-                console.log(rolName);
-                console.log(rolArn);
 
                 // ATTACH THE IAM POLICY TO THE NEW ROLE
                 var attachParams = {
@@ -82,186 +79,185 @@ exports.script = function lambdaScript(iam, fs, lambda, apigateway, domainName, 
                     RoleName: rolName
                 };
                 iam.attachRolePolicy(attachParams, function(err, data) {
-                        if (err) {
-                            console.log(err, err.stack);
-                        } 
-                        else {
-                            console.log(data);
-                            
-                            // WAIT 10 SECONDS 
-                            setTimeout(
-                                function createCopyFunc(){
-                                    // CREATE THE LAMBDA COPY BUCKET FUNCTION
-                                    console.log("ROLE ARN: ", rolArn)
-                                    var funcParams = {
-                                        Code: {
-                                            ZipFile: fs.readFileSync('../copyFunction.zip') 
-                                        }, 
-                                        Description: "This Lambda Function Allows you to copy objects from one bucket to another", 
-                                        FunctionName: `almostCopyFunction${uniqNow}`, 
-                                        Handler: "copyFunction.handler",
-                                        MemorySize: 128, 
-                                        Publish: true, 
-                                        Role: rolArn,
-                                        Runtime: "nodejs8.10", 
-                                        Timeout: 30,
-                                        Environment: {
-                                            Variables: {
-                                            'SOURCE_BUCKET': process.argv[3],
-                                            'DEST_BUCKET': process.argv[2],
-                                            }
-                                        },    
-                                    };
-                                    lambda.createFunction(funcParams, function(err, data) {
-                                        if (err) {
-                                            console.log(err, err.stack); 
+                    if (err) {
+                        console.log(err, err.stack);
+                    } 
+                    else {
+                        console.log('Please wait 10 seconds ...');                        
+                        // WAIT 10 SECONDS 
+                        setTimeout(
+                            function createCopyFunc(){
+                                // CREATE THE LAMBDA COPY BUCKET FUNCTION
+                                var funcParams = {
+                                    Code: {
+                                        ZipFile: fs.readFileSync('../copyFunction.zip') 
+                                    }, 
+                                    Description: "This Lambda Function Allows you to copy objects from one bucket to another", 
+                                    FunctionName: `almostCopyFunction${uniqNow}`, 
+                                    Handler: "copyFunction.handler",
+                                    MemorySize: 128, 
+                                    Publish: true, 
+                                    Role: rolArn,
+                                    Runtime: "nodejs8.10", 
+                                    Timeout: 30,
+                                    Environment: {
+                                        Variables: {
+                                        'SOURCE_BUCKET': storBktName,
+                                        'DEST_BUCKET': domainName,
                                         }
-                                        else {
-                                            console.log(data);
-                                            const copyFuncArn = data.FunctionArn;
-                                            const copyFuncName = data.FunctionName;
-                                            console.log(copyFuncArn);      
-                                            
-                                            // CALL THE CREATE API FUNCTION
-                                            createApi(copyFuncArn, copyFuncName);
-                                            
-                                        }
-                                    });
-                                }, 10000); 
-                        }     
+                                    },    
+                                };
+                                lambda.createFunction(funcParams, function(err, data) {
+                                    if (err) {
+                                        console.log(err, err.stack); 
+                                    }
+                                    else {
+                                        console.log('Succesfully created your Lambda function: ', data.FunctionName);
+                                        const copyFuncArn = data.FunctionArn;
+                                        const copyFuncName = data.FunctionName;     
+                                        
+                                        // CALL THE CREATE API FUNCTION
+                                        createApi(copyFuncArn, copyFuncName);
+                                        
+                                    }
+                                });
+                        }, 10000); 
+                    }     
                 });
             }
         });
-        }     
-    });
+    }     
+});
 
 
-    // CREATE THE API
-    function createApi(arn, funcName) {
-        var params = {
-            name: `almostCopyApi${uniqNow}`, /* required */
-            apiKeySource: 'HEADER',
-            description: 'The REST API for the lambda copy function',
-            endpointConfiguration: {
-            types: [
-                'REGIONAL'
-            ]
-            },
-            version: uniqNow
-        };
-        apigateway.createRestApi(params, function(err, data) {
-            if (err) {
-                console.log(err, err.stack);
-            } 
-            else {
-                console.log(data);
-                const rest_api_id = data.id;
-                //const rest_api_name = data.name
-                console.log("REST API ID: ", rest_api_id)
-                
-                // GET THE PARENT RESOURCE ID
-                var params = {
-                    restApiId: rest_api_id, /* required */
-                    };
-                    apigateway.getResources(params, function(err, data) {
-                    if (err) {
-                        console.log(err, err.stack);
-                    }
-                    else {
-                        const parent_id = data.items[0].id;
-                        console.log("RESOUCRES: ", parent_id);     
-        
-                            // CREATE THE POST METHOD
-                            var params = {
-                                authorizationType: 'NONE', /* required */
-                                httpMethod: 'POST', /* required */
-                                resourceId: parent_id, /* required */
-                                restApiId: rest_api_id, /* required */
-                                apiKeyRequired: false,
-                            };
-                            apigateway.putMethod(params, function(err, data) {
-                                if (err) {
-                                    console.log(err, err.stack);
-                                } 
-                                else {
-                                    console.log(data);
+// CREATE THE API
+function createApi(arn, funcName) {
+    var params = {
+        name: `almostCopyApi${uniqNow}`, /* required */
+        apiKeySource: 'HEADER',
+        description: 'The REST API for the lambda copy function',
+        endpointConfiguration: {
+        types: [
+            'REGIONAL'
+        ]
+        },
+        version: uniqNow
+    };
+    apigateway.createRestApi(params, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+        } 
+        else {
+            console.log('Succesfully created your REST API endpoint: ', data.name);
+            const rest_api_id = data.id;
             
-                                    // CREATE THE INTEGRATION WITH THE LAMBDA COPY BUCKET FUNCTION
-                                    var params = {
-                                        httpMethod: 'POST', /* required */
-                                        integrationHttpMethod: 'POST',
-                                        resourceId: parent_id, /* required */
-                                        restApiId: rest_api_id, /* required */
-                                        type: 'AWS', /* required */
-                                        uri: `arn:aws:apigateway:${process.env.AWS_REGION}:lambda:path/2015-03-31/functions/${arn}/invocations`
-                                    };
-                                    apigateway.putIntegration(params, function(err, data) {
-                                        if (err) {
-                                            console.log(err, err.stack);
-                                        }
-                                        else {
-                                            console.log(data);
+            // GET THE PARENT RESOURCE ID
+            var params = {
+                restApiId: rest_api_id, /* required */
+                };
+                apigateway.getResources(params, function(err, data) {
+                if (err) {
+                    console.log(err, err.stack);
+                }
+                else {
+                    const parent_id = data.items[0].id;    
+    
+                        // CREATE THE POST METHOD
+                        var params = {
+                            authorizationType: 'NONE', /* required */
+                            httpMethod: 'POST', /* required */
+                            resourceId: parent_id, /* required */
+                            restApiId: rest_api_id, /* required */
+                            apiKeyRequired: false,
+                        };
+                        apigateway.putMethod(params, function(err, data) {
+                            if (err) {
+                                console.log(err, err.stack);
+                            } 
+                            else {
+        
+                                // CREATE THE INTEGRATION WITH THE LAMBDA COPY BUCKET FUNCTION
+                                var params = {
+                                    httpMethod: 'POST', /* required */
+                                    integrationHttpMethod: 'POST',
+                                    resourceId: parent_id, /* required */
+                                    restApiId: rest_api_id, /* required */
+                                    type: 'AWS', /* required */
+                                    uri: `arn:aws:apigateway:${process.env.AWS_REGION}:lambda:path/2015-03-31/functions/${arn}/invocations`
+                                };
+                                apigateway.putIntegration(params, function(err, data) {
+                                    if (err) {
+                                        console.log(err, err.stack);
+                                    }
+                                    else {
 
-                                            // ASSIGN POLICY TO THE LAMBDA COPY BUCKET FUNCTION 
-                                            var params = {
-                                            Action: "lambda:InvokeFunction", 
-                                            FunctionName: funcName, 
-                                            Principal: "apigateway.amazonaws.com", 
-                                            SourceArn: `arn:aws:execute-api:us-east-1:519275522978:${rest_api_id}/*/POST/`,
-                                            StatementId: `ID-${uniqNow}`
-                                            };
-                                            lambda.addPermission(params, function(err, data) {
-                                                if (err) console.log(err, err.stack); // an error occurred
-                                                else     console.log(data);           // successful response
-                                            });
+                                        // ASSIGN POLICY TO THE LAMBDA COPY BUCKET FUNCTION 
+                                        var params = {
+                                        Action: "lambda:InvokeFunction", 
+                                        FunctionName: funcName, 
+                                        Principal: "apigateway.amazonaws.com", 
+                                        SourceArn: `arn:aws:execute-api:${process.env.AWS_REGION}:519275522978:${rest_api_id}/*/POST/`,
+                                        StatementId: `ID-${uniqNow}`
+                                        };
+                                        lambda.addPermission(params, function(err, data) {
+                                            if (err) {
+                                                console.log(err, err.stack);
+                                            } 
+                                            else {
+                                            }     
+                                        });
 
-                                            // CREATE THE API DEPLOYMENT
-                                            var params = {
-                                                restApiId: rest_api_id, /* required */
-                                                description: 'deployment for the REST API for the lambda copy function',
-                                                stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
-                                                stageName: `deployment${uniqNow}`,
-                                            };
-                                            apigateway.createDeployment(params, function(err, data) {
-                                                if (err) {
-                                                    console.log(err, err.stack);
-                                                }
-                                                else {
-                                                    console.log(data);
-                                                    // CREATE THE METHOD RESPONSE
-                                                    var params = {
-                                                        httpMethod: 'POST', /* required */
-                                                        resourceId: parent_id, /* required */
-                                                        restApiId: rest_api_id, /* required */
-                                                        statusCode: '200', /* required */
-                                                        };
-                                                        apigateway.putMethodResponse(params, function(err, data) {
-                                                        if (err) {
-                                                            console.log(err, err.stack);
-                                                        } 
-                                                        else {
-                                                            console.log(data);
-                                                            // CREATE THE INTEGRATION RESPONSE
-                                                            var params = {
-                                                                httpMethod: 'POST', /* required */
-                                                                resourceId: parent_id, /* required */
-                                                                restApiId: rest_api_id, /* required */
-                                                                statusCode: '200', /* required */
-                                                                };
-                                                                apigateway.putIntegrationResponse(params, function(err, data) {
-                                                                if (err) {
-                                                                    console.log(err, err.stack);
-                                                                }
-                                                                else {
-                                                                    console.log(data);
-                                                                }     
-                                                            });
-                                                        }            
-                                                    });
-                                                }
-                                            });
-                                        }     
-                                    });
+                                        // CREATE THE API DEPLOYMENT
+                                        var deployParams = {
+                                            restApiId: rest_api_id, /* required */
+                                            description: 'deployment for the REST API for the lambda copy function',
+                                            stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
+                                            stageName: `deployment${uniqNow}`,
+                                        };
+                                        apigateway.createDeployment(deployParams, function(err, data) {
+                                            if (err) {
+                                                console.log(err, err.stack);
+                                            }
+                                            else {
+                                                console.log('Succesfully deployed your REST API: ', data.id);
+                                                const invokeUrl = `https://${rest_api_id}.execute-api.${process.env.AWS_REGION}.amazonaws.com/${deployParams.stageName}/`;
+                                                console.log('Your Invoke URL: ', invokeUrl);
+                                                console.log('Add a REACT_APP_COPY_BUCKET_URL variable in .env with this value.');
+                                                // WRITE THE API URL TO VARIABLES.JSON
+                                               
+                                                // CREATE THE METHOD RESPONSE
+                                                var params = {
+                                                    httpMethod: 'POST', /* required */
+                                                    resourceId: parent_id, /* required */
+                                                    restApiId: rest_api_id, /* required */
+                                                    statusCode: '200', /* required */
+                                                    };
+                                                    apigateway.putMethodResponse(params, function(err, data) {
+                                                    if (err) {
+                                                        console.log(err, err.stack);
+                                                    } 
+                                                    else {
+                                                        // CREATE THE INTEGRATION RESPONSE
+                                                        var params = {
+                                                            httpMethod: 'POST', /* required */
+                                                            resourceId: parent_id, /* required */
+                                                            restApiId: rest_api_id, /* required */
+                                                            statusCode: '200', /* required */
+                                                            };
+                                                            apigateway.putIntegrationResponse(params, function(err, data) {
+                                                            if (err) {
+                                                                console.log(err, err.stack);
+                                                            }
+                                                            else {
+                                                                console.log('All done! Please run amplify publish');
+                                                            }     
+                                                        });
+                                                    }            
+                                                });
+                                            }
+                                        });
+                                    }     
+                                });
                                 
                             }    
                         });   

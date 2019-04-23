@@ -47,7 +47,7 @@ function convertInput(input) {
     return output;
 }
 
-// ADD THE DOMAIN NAME TO THE VARIABLES.JSON FILE
+// ADD THE VALUES TO THE VARIABLES.JSON FILE
 function addVars(jsonVar, jsonVal){
     let rawdata = fs.readFileSync('variables.json');  
     obj = JSON.parse(rawdata);
@@ -78,6 +78,7 @@ function stmt2(){
     readline.question(`I guess you want to install a backend for an existing static website [Y/n]`, (res2) => {
         switch(convertInput(res2)) {
             case 'y':
+                // please enter the name of your static website
                 sitebackend();
                 break;
             case 'n':
@@ -117,9 +118,10 @@ function stmt4(){
         switch(convertInput(res4)) {
             case 'y':
                 // EXECUTE THE WEBSITE FUNCTION
-                siteFunc();
-                console.log('Please Re-run the deployment script and select no for the first option');
-                readline.close();
+                siteFunc(false);
+                setTimeout(() => {
+                    storBkt()
+                }, 25000);
                 break;
             case 'n':
                 console.log('Please configure Amplify');
@@ -140,8 +142,7 @@ function stmt5(){
     readline.question(`Have you finished configuring the env variables? [Y/n]`, (res5) => {
         switch(convertInput(res5)) {
             case 'y':
-                // EXECUTE THE WEBSITE FUNCTION
-                siteFunc();
+                siteFunc(true);
                 break;
             default:
                 console.log('please enter a valid yes/no response');
@@ -171,13 +172,15 @@ function sitebackend(){
     }); 
 }
 
-function siteFunc() {
+function siteFunc(cond) {
     readline.question(`Please enter the domain name of your site ex. yourdomain.com `, (domainName) => {
         if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(domainName)) {
             console.log("Valid Domain Name");
             addVars('public_site', domainName);
             websiteScript.script(s3, route53, path, fs, domainName);
-            readline.close();
+            if (cond) {
+                readline.close();
+            }
         } else {
             console.log("Enter Valid Domain Name");
             siteFunc();
