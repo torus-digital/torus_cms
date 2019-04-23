@@ -79,7 +79,7 @@ function stmt2(){
         switch(convertInput(res2)) {
             case 'y':
                 // please enter the name of your static website
-                sitebackend();
+                stmt6();
                 break;
             case 'n':
                 console.log('Sorry there isnt much we can do for you right now.')
@@ -119,9 +119,7 @@ function stmt4(){
             case 'y':
                 // EXECUTE THE WEBSITE FUNCTION
                 siteFunc(false);
-                setTimeout(() => {
-                    storBkt()
-                }, 25000);
+                setTimeout(storBkt, 30000);
                 break;
             case 'n':
                 console.log('Please configure Amplify');
@@ -151,6 +149,20 @@ function stmt5(){
     });
 }
 
+function stmt6(){
+    readline.question(`Please enter the domain name of your site ex. yourdomain.com `, (domainName) => {
+        if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(domainName)) {
+            console.log("Valid Domain Name");
+            addVars('public_site', domainName);
+            sitebackend();
+        }
+        else {
+            stmt6();
+        }
+           
+    });
+}
+
 function sitebackend(){
     readline.question(`Have you already configured Amplify? [Y/n]`, (res6) => {
         switch(convertInput(res6)) {
@@ -159,10 +171,11 @@ function sitebackend(){
                 break;
             case 'n':
                 console.log('Please configure Amplify');
-                console.log('run: amplify init');
                 console.log('run: amplify configure');
-                console.log('Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables with the credentials of the IAM user created for Amplify');
-                console.log('then re-run the deployment script.')
+                console.log('run: amplify init');  
+                console.log('Add AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY env variables with the credentials of the IAM user created for Amplify');
+                console.log('Add a AWS_REGION env variable with your selected region i.e. us-east-1');
+                console.log('re-run the deployment script.')
                 readline.close();
                 break;
             default:
