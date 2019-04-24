@@ -231,6 +231,12 @@ function createApi(arn, funcName) {
                                                     resourceId: parent_id, /* required */
                                                     restApiId: rest_api_id, /* required */
                                                     statusCode: '200', /* required */
+                                                    responseParameters: { 
+                                                        'method.response.header.Access-Control-Allow-Origin': false 
+                                                    },
+                                                    responseModels: { 
+                                                        'application/json': 'Empty' 
+                                                    }
                                                     };
                                                     apigateway.putMethodResponse(params, function(err, data) {
                                                     if (err) {
@@ -243,6 +249,12 @@ function createApi(arn, funcName) {
                                                             resourceId: parent_id, /* required */
                                                             restApiId: rest_api_id, /* required */
                                                             statusCode: '200', /* required */
+                                                            responseParameters: { 
+                                                                'method.response.header.Access-Control-Allow-Origin': "'*'" 
+                                                            },
+                                                            responseTemplates: { 
+                                                                'application/json': null 
+                                                            }
                                                             };
                                                             apigateway.putIntegrationResponse(params, function(err, data) {
                                                             if (err) {
