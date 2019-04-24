@@ -1,4 +1,4 @@
-type Picture {
+type Picture @model @auth(rules: [{allow: owner}]) {
   id: ID!
   title: String
   description: String
@@ -11,7 +11,7 @@ type S3Object {
   key: String!
 }
 
-type Article {
+type Article @model {
   id: ID!
   title: String!
   body_html: String!
