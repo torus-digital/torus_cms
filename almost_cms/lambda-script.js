@@ -251,9 +251,6 @@ function createApi(arn, funcName) {
                                                             statusCode: '200', /* required */
                                                             responseParameters: { 
                                                                 'method.response.header.Access-Control-Allow-Origin': "'*'" 
-                                                            },
-                                                            responseTemplates: { 
-                                                                'application/json': null 
                                                             }
                                                             };
                                                             apigateway.putIntegrationResponse(params, function(err, data) {

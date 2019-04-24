@@ -12,24 +12,24 @@ https://lqcpx32pxa.execute-api.us-east-1.amazonaws.com/deployment20190417091135
   console.log('METHOD RESPONSE');
   var params = {
     httpMethod: 'POST', /* required */
-    resourceId: 'bcyi6en6wa', /* required */
-    restApiId: 'g5vjqzxs72', /* required */
+    resourceId: 'd34ey94tal', /* required */
+    restApiId: 'dquw9oidca', /* required */
     statusCode: '200' /* required */
   };
   apigateway.getMethodResponse(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else     console.log('METHOD RESPONSE ', data);           // successful response
   });
 
 
-  //get integration response
+  console.log('INTEGRATION RESPONSE')
   var params = {
     httpMethod: 'POST', /* required */
-    resourceId: 'bcyi6en6wa', /* required */
-    restApiId: 'g5vjqzxs72', /* required */
+    resourceId: 'd34ey94tal', /* required */
+    restApiId: 'dquw9oidca', /* required */
     statusCode: '200' /* required */
   };
   apigateway.getIntegrationResponse(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else     console.log('INTEGRATION RESPONSE', data);           // successful response
   });
