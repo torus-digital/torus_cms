@@ -204,29 +204,8 @@ function createApi(arn, funcName) {
                                                 console.log(err, err.stack);
                                             } 
                                             else {
-                                            }     
-                                        });
-
-                                        // CREATE THE API DEPLOYMENT
-                                        var deployParams = {
-                                            restApiId: rest_api_id, /* required */
-                                            description: 'deployment for the REST API for the lambda copy function',
-                                            stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
-                                            stageName: `deployment${uniqNow}`,
-                                        };
-                                        apigateway.createDeployment(deployParams, function(err, data) {
-                                            if (err) {
-                                                console.log(err, err.stack);
-                                            }
-                                            else {
-                                                console.log('Succesfully deployed your REST API: ', data.id);
-                                                const invokeUrl = `https://${rest_api_id}.execute-api.${process.env.AWS_REGION}.amazonaws.com/${deployParams.stageName}/`;
-                                                console.log('Your Invoke URL: ', invokeUrl);
-                                                console.log('Add a REACT_APP_COPY_BUCKET_URL variable in .env with this value.');
-                                                // WRITE THE API URL TO VARIABLES.JSON
-                                               
-                                                // CREATE THE METHOD RESPONSE
-                                                var params = {
+                                                 // CREATE THE METHOD RESPONSE
+                                                 var params = {
                                                     httpMethod: 'POST', /* required */
                                                     resourceId: parent_id, /* required */
                                                     restApiId: rest_api_id, /* required */
@@ -251,6 +230,9 @@ function createApi(arn, funcName) {
                                                             statusCode: '200', /* required */
                                                             responseParameters: { 
                                                                 'method.response.header.Access-Control-Allow-Origin': "'*'" 
+                                                            },
+                                                            responseTemplates: { 
+                                                                'application/json': '' 
                                                             }
                                                             };
                                                             apigateway.putIntegrationResponse(params, function(err, data) {
@@ -258,13 +240,35 @@ function createApi(arn, funcName) {
                                                                 console.log(err, err.stack);
                                                             }
                                                             else {
-                                                                console.log('All done! Please run amplify hosting add and amplify publish');
+                                                                // CREATE THE API DEPLOYMENT
+                                                                var deployParams = {
+                                                                    restApiId: rest_api_id, /* required */
+                                                                    description: 'deployment for the REST API for the lambda copy function',
+                                                                    stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
+                                                                    stageName: `deployment${uniqNow}`,
+                                                                };
+                                                                apigateway.createDeployment(deployParams, function(err, data) {
+                                                                    if (err) {
+                                                                        console.log(err, err.stack);
+                                                                    }
+                                                                    else {
+                                                                        console.log('Succesfully deployed your REST API: ', data.id);
+                                                                        const invokeUrl = `https://${rest_api_id}.execute-api.${process.env.AWS_REGION}.amazonaws.com/${deployParams.stageName}/`;
+                                                                        console.log('Your Invoke URL: ', invokeUrl);
+                                                                        console.log('Add a REACT_APP_COPY_BUCKET_URL variable in .env with this value.');
+                                                                        // WRITE THE API URL TO VARIABLES.JSON
+                                                                    
+                                                                    }
+                                                                });
+                                                                
                                                             }     
                                                         });
                                                     }            
                                                 });
-                                            }
+                                            }     
                                         });
+
+                                        
                                     }     
                                 });
                                 
