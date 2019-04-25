@@ -98,3 +98,4 @@ node_modules/
 aws-exports.js
 src/aws-exports.js
 awsconfiguration.json
+variables.json

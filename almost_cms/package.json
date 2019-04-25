@@ -6,10 +6,12 @@
   "dependencies": {
     "aws-amplify": "^1.1.24",
     "aws-amplify-react": "^2.3.4",
+    "aws-sdk": "^2.437.0",
     "draft-js": "^0.10.5",
     "draftjs-to-html": "^0.8.4",
     "graphql": "^14.2.1",
     "graphql-tag": "^2.10.1",
+    "open": "^6.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draft-wysiwyg": "^1.13.2",
