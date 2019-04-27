@@ -2,7 +2,7 @@
     
 1. ** Prerequisites **
     1. Make sure you have node.js and npm installed. You can checkout this [tutorial](https://medium.com/@lucaskay/install-node-and-npm-using-nvm-in-mac-or-linux-ubuntu-f0c85153e173) to install npm and node in mac, linux (debian/ubuntu).
-    2. Make sure you have an AWS account. If you don't have an AWS account, you can easily create one [here](https://portal.aws.amazon.com/billing/signup?#/start). Don't worry, everything you do with this project will fall within the AWS free tier limit! if you deploy cloudfront and get a lot of traffic in your site you'll maybe have a small bill.. 
+    2. Make sure you have an AWS account. If you don't have an AWS account, you can easily create one [here](https://portal.aws.amazon.com/billing/signup?#/start). Don't worry, everything you do with this project will fall within the AWS free tier limit! If you want to deploy cloudfront and you get a lot of traffic in your site you'll perhaps have a small bill.. 
 2. Clone the git repository
 3. Go into the app directory of the project ` cd almost_cms/almost_cms `
 4. Install all dependencies by running ` npm install`
@@ -32,7 +32,7 @@
 14. Set up hosting for the amplify app `amplify hosting add `
     
     1. Select ` dev `
-    2. For the name of the bucket, enter ` admin.your-domain.com ` replace your-domain with your domain..
+    2. For the name of the bucket, enter ` admin.your-domain.com ` replace your-domain.com with your domain..
 
 
 15. Re-run the deployment script. the name of your storage bucket will contain -dev at the end (dev is the name of your environment).
