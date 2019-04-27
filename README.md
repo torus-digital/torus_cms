@@ -9,7 +9,7 @@
 5. Install the amplify cli ` npm install -g @aws-amplify/cli`
 6. run the deplyment script `node deployment-script.js`
 7. Configure amplify by running ` amplify configure `
-    - The following short video [tutorial](https://www.youtube.com/watch?v=fWbM5DLh25U) will help you with the configuration
+    - If you need help with configuration check out this [video tutorial](https://www.youtube.com/watch?v=fWbM5DLh25U)
 8. Create a file called .env withe the following variables
 
     ```
@@ -32,12 +32,12 @@
 14. Set up hosting for the amplify app `amplify hosting add `
     
     1. Select ` dev `
-    2. For the name of the bucket, enter ` admin.your-domain.com `
+    2. For the name of the bucket, enter ` admin.your-domain.com ` replace your-domain with your domain..
 
 
 15. Re-run the deployment script. the name of your storage bucket will contain -dev at the end (dev is the name of your environment).
 
-16. Now your ready to publish your app. Run ` amplify publush `
+16. Now your ready to publish your app. Run ` amplify publish `
 
     1. Do you want to generate code for your newly created api? ` No `
     2. Be a bit patient ...
