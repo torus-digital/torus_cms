@@ -6,12 +6,6 @@ import 'semantic-ui-css/semantic.min.css'
 //rich text editor
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-//article mutations
-import { graphqlOperation }  from "aws-amplify";
-import { Connect } from "aws-amplify-react";
-import * as article_mut from './GraphQL/MutationCreateArticle';
-import * as picture_mut from './GraphQL/MutationCreatePicture';
-
 //Amplify
 import Amplify from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react';
@@ -31,18 +25,10 @@ class App extends Component {
     return (
       <div className="App">
         <div>
-          <Connect mutation={graphqlOperation(article_mut.createArticle)}>
-            {({mutation}) => (
-              <AddArticle onCreate={mutation} />
-            )}
-          </Connect>
+          <AddArticle></AddArticle>
         </div>
         <div>
-          <Connect mutation={graphqlOperation(picture_mut.createPicture)}>
-            {({mutation}) => (
-              <AddPicture onCreate={mutation} />
-            )}
-          </Connect>
+          <AddPicture></AddPicture>
         </div>       
       </div>
     );

@@ -3,6 +3,9 @@ import '../App.css';
 import { addToStorage, copyToBucket } from './Shared.js';
 import 'semantic-ui-css/semantic.min.css';
 
+import { API, graphqlOperation } from "aws-amplify";
+import CreateArticle from '../GraphQL/MutationCreateArticle.js';
+
 //rich text editor
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
@@ -55,62 +58,76 @@ class AddArticle extends Component {
 			title: title,
 			fileObj: fileObj,
 		}
-    const { onCreate } = this.props;
-    var input = {
-      title: this.state.title,
+
+		var input = {
+			title: this.state.title,
 			body_html: html_body,
 			body_txt: txt_body,
 		}
-		let firstFunct = await onCreate({input});
-		console.log("Succesfully added to the DB:", firstFunct.data.createArticle);
-		// Execute the Add article function
-		let addArticle = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj, 'html'); 
-		switch(addArticle) {
-			// If the add article function is succesful
+		//console.log(input)
+		var addToDB = await API.graphql(graphqlOperation(CreateArticle, input))
+		.then (result => {
+			console.log(`Successfully added the item ${result.data.createArticle.title} to the Pictures table. reference:`, result.data.createArticle.id)
+			return 'Success'
+		})
+		.catch(err => {
+			console.log('error: ', err)
+			return err
+		});
+		switch(addToDB) {
 			case 'Success':
-				const bucketVars = {
-					sourceRoute: `public/${section}`,
-					sourceObject: `${title}.html`,
-					destRoute: `${section}`
-				};
-				// execute the copy article function.
-				let copyArticle = await new copyToBucket(bucketVars);
-				switch(copyArticle) {
-					// If the copy article function is succesful
+				// Execute the Add article function
+				let addArticle = await new addToStorage(Obj.contentType, Obj.section, Obj.title, Obj.fileObj, 'html'); 
+				switch(addArticle) {
+					// If the add article function is succesful
 					case 'Success':
-						console.log(`Succesfully copied ${bucketVars.sourceObject} to ${bucketVars.destRoute}`);
-						// execute the create index function
-						let addIndex = await new createIndex();
-						switch(addIndex) {
-							// if the create index function is succesful
+						const bucketVars = {
+							sourceRoute: `public/${section}`,
+							sourceObject: `${title}.html`,
+							destRoute: `${section}`
+						};
+						// execute the copy article function.
+						let copyArticle = await new copyToBucket(bucketVars);
+						switch(copyArticle) {
+							// If the copy article function is succesful
 							case 'Success':
-								// execute the copy index function
-								const bucketVars = {
-									sourceRoute: 'public/articles',
-									sourceObject: 'index.html',
-									destRoute: 'articles'
-								};
-								let copyIndex = await new copyToBucket(bucketVars);
-								switch(copyIndex) {
+								console.log(`Succesfully copied ${bucketVars.sourceObject} to ${bucketVars.destRoute}`);
+								// execute the create index function
+								let addIndex = await new createIndex();
+								switch(addIndex) {
+									// if the create index function is succesful
 									case 'Success':
-										console.log( "Congratulations! You have succesfully published your new Article!" );
+										// execute the copy index function
+										const bucketVars = {
+											sourceRoute: 'public/articles',
+											sourceObject: 'index.html',
+											destRoute: 'articles'
+										};
+										let copyIndex = await new copyToBucket(bucketVars);
+										switch(copyIndex) {
+											case 'Success':
+												console.log( "Congratulations! You have succesfully published your new Article!" );
+												break;
+											default:
+												console.log("Error: Failed to copy your index")
+										}
 										break;
 									default:
-										console.log("Error: Failed to copy your index")
+										console.log("Error: Failed to save the new articles index");
 								}
 								break;
 							default:
-								console.log("Error: Failed to save the new articles index");
+								console.log(copyArticle)
+								console.log("Error: Failed to copy your article to your public bucket.");
+						}
+							break;
+						default:
+							console.log("Error: Failed to add your Article to your private S3 storage bucket.")
 						}
 						break;
 					default:
-						console.log(copyArticle)
-						console.log("Error: Failed to copy your article to your public bucket.");
-				}
-					break;
-				default:
-					console.log("Error: Failed to add your Article to your private S3 storage bucket.")
-				}
+						console.log('Error. Something went wrong. please try again later.', addToDB)
+			}
 	}			
   
   render(){
