@@ -1,12 +1,14 @@
-export const createPicture = `mutation CreatePicture($input: CreatePictureInput!) {
-  createPicture(input: $input) {
+const CreatePicture = `mutation($title: String!, $description: String!, $file: String!) {
+  createPicture(input:{
+    title: $title
+    description: $description
+    file: $file
+  }) {
     id
     title
-    description
-    file
   }
-}
-`;
+}`
+export default CreatePicture
 
 
 

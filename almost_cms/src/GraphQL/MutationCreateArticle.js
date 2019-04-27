@@ -5,6 +5,7 @@ const CreateArticle = `mutation($title: String!, $body_html: String!, $body_txt:
     body_txt: $body_txt
   }) {
     id
+    title
   }
 }`
 export default CreateArticle

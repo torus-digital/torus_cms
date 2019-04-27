@@ -67,14 +67,13 @@ class AddArticle extends Component {
 		//console.log(input)
 		var addToDB = await API.graphql(graphqlOperation(CreateArticle, input))
 		.then (result => {
-			console.log('Succes', result)
+			console.log(`Successfully added the item ${result.data.createArticle.title} to the Pictures table. reference:`, result.data.createArticle.id)
 			return 'Success'
 		})
 		.catch(err => {
 			console.log('error: ', err)
 			return err
 		});
-		console.log(addToDB)
 		switch(addToDB) {
 			case 'Success':
 				// Execute the Add article function
@@ -127,7 +126,7 @@ class AddArticle extends Component {
 						}
 						break;
 					default:
-						console.log('Error. Something went wrong. please try again later.')
+						console.log('Error. Something went wrong. please try again later.', addToDB)
 			}
 	}			
   
