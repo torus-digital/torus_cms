@@ -37,6 +37,9 @@
 
 15. Re-run the deployment script. the name of your storage bucket will contain -dev at the end (dev is the name of your environment).
 
+16. Add a new variable to your .env file containing the api invoke URL `REACT_APP_COPY_BUCKET_URL=your-invoke-url`.
+
+
 16. Now your ready to publish your app. Run ` amplify publish `
 
     1. Do you want to generate code for your newly created api? ` No `
