@@ -3,7 +3,7 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import { API, graphqlOperation } from "aws-amplify";
-import gql from '../GraphQL/QueryListArticles';
+import gql from '../GraphQL/QueryArticleList';
 
 //rich text editor
 import { EditorState, convertToRaw } from 'draft-js';
@@ -28,9 +28,11 @@ class AddArticle extends Component {
 			body_html: '',
 			body_txt: '',
 			list: [],
+			item: '',
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.handleOpen = this.handleOpen.bind(this)
 	}
 
 	componentDidMount() {
@@ -42,11 +44,15 @@ class AddArticle extends Component {
         initialList = data.map((article) => {
             return article
         });
-        console.log(initialList);
         this.setState({
             list: initialList,
         });
     });
+	}
+
+	handleOpen(event) {
+		console.log(this.state.item)
+		event.preventDefault() 
 	}
 
 
@@ -77,16 +83,21 @@ class AddArticle extends Component {
 	
 	render() {
 		let list = this.state.list;
-		console.log(list)
 		let optionItems = list.map((article, i) =>
 			<option key={i} value={article.id}>{article.title}</option>
 		);
 		const { editorState } = this.state;
 		return (
 			<div>
-				<select>
-					{optionItems}
-				</select>
+				<div className="container">
+					<h1>Open an Article</h1>
+					<form onSubmit={this.handleOpen}>
+						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>>
+							{optionItems}
+						</select>
+						<input type="submit" value="Submit"></input>
+					</form>
+				</div>
 				<div className="container">
 					<h1>Post a comment</h1>
 					<form onSubmit={this.handleSubmit}>
