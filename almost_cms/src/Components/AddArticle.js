@@ -11,12 +11,18 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 //import htmlToDraft from 'html-to-draftjs';
 
-function submitArticle(txt_body, input) {
+function submitArticle(txt_body, input, id) {
 	if (!txt_body) {
 		alert('Error. Body cannot be empty');
 	}
 	else {
-		createArticle(input);
+		//const articleId = this.state.item
+		if(!id) {
+			createArticle(input);
+		}
+		else {
+			alert('Hello');
+		}
 	}
 }
 
@@ -72,19 +78,20 @@ class AddArticle extends Component {
 		var { editorState } = this.state;
 		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
 		var txt_body = editorState ? this.state.editorState.getCurrentContent().getPlainText() : null;
+		var articleId = this.state.item;
 		var input = {
 			title: this.state.title,
 			body_html: html_body,
 			body_txt: txt_body,
 		};
-		submitArticle(txt_body, input)
+		submitArticle(txt_body, input, articleId)
 		event.preventDefault()    
 	}
 	
 	render() {
 		let list = this.state.list;
 		let optionItems = list.map((article, i) =>
-			<option key={i} value={article.id}>{article.title}</option>
+			<option key={i+1} value={article.id}>{article.title}</option>
 		);
 		const { editorState } = this.state;
 		return (
@@ -93,6 +100,7 @@ class AddArticle extends Component {
 					<h1>Open an Article</h1>
 					<form onSubmit={this.handleOpen}>
 						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>>
+							<option key={0} value=''>Select an option</option>
 							{optionItems}
 						</select>
 						<input type="submit" value="Submit"></input>
