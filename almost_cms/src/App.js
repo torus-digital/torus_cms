@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
-
 //rich text editor
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
 //Amplify
 import Amplify from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react';
-
 // Components
-import AddPicture from "./Components/AddPicture2";
-import AddArticle from "./Components/AddArticle2"
-
+import AddPicture from "./Components/AddPicture";
+import AddArticle from "./Components/AddArticle"
 import awsconfig from './aws-exports';
 
 // Amplify init
