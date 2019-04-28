@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import './Components/AddArticle.js';
 import 'semantic-ui-css/semantic.min.css'
 
 //rich text editor
@@ -12,7 +11,7 @@ import { withAuthenticator } from 'aws-amplify-react';
 
 // Components
 import AddPicture from "./Components/AddPicture";
-import AddArticle from "./Components/AddArticle"
+import AddArticle from "./Components/AddArticle2"
 
 import awsconfig from './aws-exports';
 
