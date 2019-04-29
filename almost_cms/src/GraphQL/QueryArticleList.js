@@ -1,7 +1,5 @@
-import gql from 'graphql-tag';
-
-export default gql`
-query {
+const articleList =
+`query {
   listArticles(limit: 1000) {
     items {
       id
@@ -9,3 +7,4 @@ query {
       }
     }
 }`;
+export default articleList;
