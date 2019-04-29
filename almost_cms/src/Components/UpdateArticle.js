@@ -19,14 +19,12 @@ export default async function updateArticle(input, item) {
 		title: input.title,
 		fileObj: fileObj,
     }
-    console.log(input)
     const putInput = {
         id: item,
         title: input.title,
         body_html: input.body_html,
         body_txt: input.body_txt,
     }
-    console.log(putInput)
 	var putToDB = await API.graphql(graphqlOperation(UpdateArticle, putInput))
 	.then (result => {
 		console.log(`Successfully added the item ${result.data.updateArticle.title} to the Pictures table. reference:`, result.data.updateArticle.id)
@@ -54,7 +52,6 @@ export default async function updateArticle(input, item) {
                                 destRoute: `${section}`
                             };
                             // execute the create index function
-                            console.log(articleVars)
                             return articleVars;
                             // execute the copy article function.
                             //publishArticle(articleVars);

@@ -21,18 +21,14 @@ async function submitArticle(txt_body, input, id) {
 		//const articleId = this.state.item
 		if(!id) {
 			let x = await createArticle(input).then(response => {
-				console.log(response);
 				return response;
 			});
-			console.log(x);
 			return x;			
 		}
 		else {
 			let y = await updateArticle(input, id).then(response =>{
-				console.log(response);
 				return response;
 			});
-			console.log(y);
 			return y;
 		}
 	}
@@ -100,7 +96,6 @@ class AddArticle extends Component {
 				
 			}
 		}
-		console.log(this.state)
 		event.preventDefault() 
 	}
   
@@ -157,7 +152,7 @@ class AddArticle extends Component {
 							<option key={0} value=''>Select an option</option>
 							{optionItems}
 						</select>
-						<input disabled={!this.state.item} type="submit" value="Submit"></input>
+						<input disabled={!this.state.item} type="submit" value="Open"></input>
 					</form>
 				</div>
 				<div className="container">
@@ -178,7 +173,7 @@ class AddArticle extends Component {
 							editorClassName="demo-editor"
 							onEditorStateChange={this.onEditorStateChange}
 						/>
-						<input type="submit" value="Submit" />
+						<input type="submit" value="Save" />
 						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
 					</form>
 				</div>
