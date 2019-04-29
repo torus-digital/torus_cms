@@ -4,7 +4,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import UpdateArticle from '../GraphQL/MutationUpdateArticle.js';
 //import the createIndexFunction
 import createIndex from './CreateArticleIndex';
-import publishArticle from './PublishArticle.js';		
+//import publishArticle from './PublishArticle.js';		
 		
 export default async function updateArticle(input, item) {
 	//TEMPLATE
@@ -34,7 +34,7 @@ export default async function updateArticle(input, item) {
 	})
 	.catch(err => {
 		console.log('error: ', err)
-		return err
+		return 'Error'
 	});
 	switch(putToDB) {
 		case 'Success':
@@ -53,20 +53,23 @@ export default async function updateArticle(input, item) {
                                 sourceObject: `${input.title}.html`,
                                 destRoute: `${section}`
                             };
+                            // execute the create index function
+                            console.log(articleVars)
+                            return articleVars;
                             // execute the copy article function.
-                            publishArticle(articleVars);
-							break;
+                            //publishArticle(articleVars);
 						default:
-							console.log("Error: Failed to save the new articles index");
+                            console.log("Error: Failed to save the new articles index");
+                            return 'Error';
 					}
-						break;
-					default:
-						console.log("Error: Failed to save your Article in your S3 storage bucket.")
-					}
-					break;
-				default:
-					console.log('Error. Failed to add your item to the database.', putToDB)
-		}
+                default:
+                    console.log("Error: Failed to save your Article in your S3 storage bucket.");
+                    return 'Error';
+            }
+        default:
+            console.log('Error. Failed to add your item to the database.', putToDB);
+            return 'Error';
+	}
 	
 }		
 		

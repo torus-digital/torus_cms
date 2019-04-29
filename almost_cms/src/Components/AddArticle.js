@@ -12,17 +12,27 @@ import { EditorState, convertToRaw, convertFromHTML, ContentState } from 'draft-
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 
-function submitArticle(txt_body, input, id) {
+async function submitArticle(txt_body, input, id) {
 	if (!txt_body) {
 		alert('Error. Body cannot be empty');
 	}
 	else {
 		//const articleId = this.state.item
 		if(!id) {
-			createArticle(input);
+			let x = await createArticle(input).then(response => {
+				console.log(response);
+				return response;
+			});
+			console.log(x);
+			return x;			
 		}
 		else {
-			updateArticle(input, id);
+			let y = await updateArticle(input, id).then(response =>{
+				console.log(response);
+				return response;
+			});
+			console.log(y);
+			return y;
 		}
 	}
 }
@@ -39,6 +49,7 @@ class AddArticle extends Component {
 			body_txt: '',
 			list: [],
 			item: '',
+			response: {},
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -91,8 +102,6 @@ class AddArticle extends Component {
 		console.log(this.state)
 		event.preventDefault() 
 	}
-
-
   
 	handleChange(event) {
 		this.setState({ [event.target.name]: event.target.value })
@@ -107,7 +116,9 @@ class AddArticle extends Component {
 			body_html: html_body,
 			body_txt: txt_body,
 		};
-		submitArticle(txt_body, input, articleId)
+		var response = submitArticle(txt_body, input, articleId);
+		console.log(response)
+		//this.setState({response}) 
 		event.preventDefault()    
 	}
 	
