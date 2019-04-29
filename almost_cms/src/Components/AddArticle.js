@@ -7,10 +7,9 @@ import articleList from '../GraphQL/QueryArticleList';
 //import addArticle from '../GraphQL/QueryGetArticle';
 
 //rich text editor
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromHTML, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
-//import htmlToDraft from 'html-to-draftjs';
 
 function submitArticle(txt_body, input, id) {
 	if (!txt_body) {
@@ -28,6 +27,9 @@ function submitArticle(txt_body, input, id) {
 }
 
 class AddArticle extends Component {
+	state = {
+    editorState: EditorState.createEmpty(),
+  }
 	constructor(props) {
 		super(props)
 		this.state = { 
@@ -57,26 +59,37 @@ class AddArticle extends Component {
     });
 	}
 
+	onEditorStateChange: Function = (editorState) => {
+			this.setState({
+				editorState,
+			});
+		};
+
 	handleOpen(event) {
 		console.log(this.state.item)
 		var id = this.state.item
 		for(let elem of this.state.list) {
 			if(elem.id === id) {
 				console.log(elem.body_html)
+				this.setState({
+					title: elem.title,
+					html_body: elem.html_body,
+				})	
+				const sampleMarkup = elem.body_html;
+				const blocksFromHTML = convertFromHTML(sampleMarkup);
+				const state = ContentState.createFromBlockArray(
+					blocksFromHTML.contentBlocks,
+					blocksFromHTML.entityMap
+				);
+				this.setState({
+					editorState: EditorState.createWithContent(state),
+				});		
 			}
 		}
 		event.preventDefault() 
 	}
 
 
-	state = {
-    editorState: EditorState.createEmpty(),
-  }
-  onEditorStateChange: Function = (editorState) => {
-    this.setState({
-      editorState,
-    });
-	};
   
 	handleChange(event) {
 		this.setState({ [event.target.name]: event.target.value })
@@ -125,6 +138,7 @@ class AddArticle extends Component {
 							onChange={this.handleChange}
 						/>
 						<Editor
+							value={editorState}
 							editorState={editorState}
 							wrapperClassName="demo-wrapper"
 							editorClassName="demo-editor"
