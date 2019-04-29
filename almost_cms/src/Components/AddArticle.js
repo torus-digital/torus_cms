@@ -4,7 +4,7 @@ import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';
-import addArticle from '../GraphQL/QueryGetArticle';
+//import addArticle from '../GraphQL/QueryGetArticle';
 
 //rich text editor
 import { EditorState, convertToRaw } from 'draft-js';
@@ -60,13 +60,11 @@ class AddArticle extends Component {
 	handleOpen(event) {
 		console.log(this.state.item)
 		var id = this.state.item
-		API.graphql(graphqlOperation(addArticle, id))
-			.then(result => {
-					console.log(result)
-			}).catch(err => {
-				console.log('error: ', err)
-				return err
-			});
+		for(let elem of this.state.list) {
+			if(elem.id === id) {
+				console.log(elem.body_html)
+			}
+		}
 		event.preventDefault() 
 	}
 

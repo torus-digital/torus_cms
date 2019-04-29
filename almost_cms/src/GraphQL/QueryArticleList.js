@@ -3,7 +3,8 @@ const articleList =
   listArticles(limit: 1000) {
     items {
       id
-      title   
+      title
+      body_html   
       }
     }
 }`;
