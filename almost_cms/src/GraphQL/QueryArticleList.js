@@ -4,7 +4,8 @@ const articleList =
     items {
       id
       title
-      body_html   
+      body_html 
+      body_txt  
       }
     }
 }`;

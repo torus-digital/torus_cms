@@ -67,25 +67,27 @@ class AddArticle extends Component {
 
 	handleOpen(event) {
 		console.log(this.state.item)
+
 		var id = this.state.item
 		for(let elem of this.state.list) {
 			if(elem.id === id) {
-				console.log(elem.body_html)
-				this.setState({
-					title: elem.title,
-					html_body: elem.html_body,
-				})	
 				const sampleMarkup = elem.body_html;
 				const blocksFromHTML = convertFromHTML(sampleMarkup);
 				const state = ContentState.createFromBlockArray(
 					blocksFromHTML.contentBlocks,
 					blocksFromHTML.entityMap
 				);
+				console.log(elem.body_html)
 				this.setState({
+					title: elem.title,
+					body_html: elem.body_html,
+					body_txt: elem.body_txt,
 					editorState: EditorState.createWithContent(state),
-				});		
+				});	
+				
 			}
 		}
+		console.log(this.state)
 		event.preventDefault() 
 	}
 
