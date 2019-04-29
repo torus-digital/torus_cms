@@ -13,27 +13,6 @@ import { EditorState, convertToRaw, convertFromHTML, ContentState } from 'draft-
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 
-async function submitArticle(txt_body, input, id) {
-	if (!txt_body) {
-		alert('Error. Body cannot be empty');
-	}
-	else {
-		//const articleId = this.state.item
-		if(!id) {
-			let x = await createArticle(input).then(response => {
-				return response;
-			});
-			return x;			
-		}
-		else {
-			let y = await updateArticle(input, id).then(response =>{
-				return response;
-			});
-			return y;
-		}
-	}
-}
-
 class AddArticle extends Component {
 	state = {
     editorState: EditorState.createEmpty(),
@@ -112,27 +91,50 @@ class AddArticle extends Component {
 			body_html: html_body,
 			body_txt: txt_body,
 		};
-		var response = submitArticle(txt_body, input, articleId);
-		switch(response) {
-			case 'Error':
-				console.log('Error. Something went wrong...');
-				break;
-			default:
-				this.setState({
-					response: true,
-				})
-		}
+		(async function(id){
+			if (!txt_body) {
+				alert('Error. Body cannot be empty');
+			}
+			else {
+				//const articleId = this.state.item
+				if(!id) {
+					let x = await createArticle(input).then(response => {
+						return response;
+					});
+					return x;			
+				}
+				else {
+					let y = await updateArticle(input, id).then(response =>{
+						return response;
+					});
+					return y;
+				}
+			}
+		})(articleId).then( response => {
+			switch(response) {
+				case 'Error':
+					console.log('Error. Something went wrong...');
+					break;
+				default:
+					this.setState({
+						response: true,
+					})
+			}
+		});
 		event.preventDefault()    
 	}
 	//handler for publish event
-	handleAlternate(event) {
+	async handleAlternate(event) {
 		const section = 'articles'
 		const articleVars = {
 			sourceRoute: `public/${section}`,
 			sourceObject: `${this.state.title}.html`,
 			destRoute: `${section}`
 		};
-		publishArticle(articleVars)
+		await publishArticle(articleVars).then( response => {
+			console.log(response);
+			window.location.reload();
+		})
 		event.preventDefault();
 	  }
 	
