@@ -3,6 +3,7 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import updateArticle from './UpdateArticle';
+import publishArticle from './PublishArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';
 //import addArticle from '../GraphQL/QueryGetArticle';
@@ -49,7 +50,7 @@ class AddArticle extends Component {
 			body_txt: '',
 			list: [],
 			item: '',
-			response: {},
+			response: false,
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -117,10 +118,29 @@ class AddArticle extends Component {
 			body_txt: txt_body,
 		};
 		var response = submitArticle(txt_body, input, articleId);
-		console.log(response)
-		//this.setState({response}) 
+		switch(response) {
+			case 'Error':
+				console.log('Error. Something went wrong...');
+				break;
+			default:
+				this.setState({
+					response: true,
+				})
+		}
 		event.preventDefault()    
 	}
+	//handler for publish event
+	handleAlternate(event) {
+		const section = 'articles'
+		const articleVars = {
+			sourceRoute: `public/${section}`,
+			sourceObject: `${this.state.title}.html`,
+			destRoute: `${section}`
+		};
+		publishArticle(articleVars)
+		event.preventDefault();
+	  }
+	
 	
 	render() {
 		let list = this.state.list;
@@ -137,7 +157,7 @@ class AddArticle extends Component {
 							<option key={0} value=''>Select an option</option>
 							{optionItems}
 						</select>
-						<input type="submit" value="Submit"></input>
+						<input disabled={!this.state.item} type="submit" value="Submit"></input>
 					</form>
 				</div>
 				<div className="container">
@@ -159,6 +179,7 @@ class AddArticle extends Component {
 							onEditorStateChange={this.onEditorStateChange}
 						/>
 						<input type="submit" value="Submit" />
+						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
 					</form>
 				</div>
 			</div>
