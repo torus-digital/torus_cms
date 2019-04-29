@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
+import updateArticle from './UpdateArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';
 //import addArticle from '../GraphQL/QueryGetArticle';
@@ -21,7 +22,7 @@ function submitArticle(txt_body, input, id) {
 			createArticle(input);
 		}
 		else {
-			alert('Hello');
+			updateArticle(input, id);
 		}
 	}
 }
