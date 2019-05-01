@@ -103,14 +103,12 @@ class AddArticle extends Component {
 			title: this.state.title,
 			body_html: editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null,
 		};
-		console.log(itemProps);
-		console.log(currentState);
 		(async function(id, props, state){
 			if (!txt_body) {
 				alert('Error. Body cannot be empty');
 			}
 			else if (state.body_html === props.body_html && state.title === props.title) {
-				alert('Error. Detected no changes...');
+				alert('Error. No changes detected');
 			}
 			else {
 				//const articleId = this.state.item
