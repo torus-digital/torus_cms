@@ -3,6 +3,7 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import updateArticle from './UpdateArticle';
+import publishArticle from './PublishArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';
 //import addArticle from '../GraphQL/QueryGetArticle';
@@ -11,21 +12,6 @@ import articleList from '../GraphQL/QueryArticleList';
 import { EditorState, convertToRaw, convertFromHTML, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
-
-function submitArticle(txt_body, input, id) {
-	if (!txt_body) {
-		alert('Error. Body cannot be empty');
-	}
-	else {
-		//const articleId = this.state.item
-		if(!id) {
-			createArticle(input);
-		}
-		else {
-			updateArticle(input, id);
-		}
-	}
-}
 
 class AddArticle extends Component {
 	state = {
@@ -39,6 +25,7 @@ class AddArticle extends Component {
 			body_txt: '',
 			list: [],
 			item: '',
+			response: false,
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -88,11 +75,8 @@ class AddArticle extends Component {
 				
 			}
 		}
-		console.log(this.state)
 		event.preventDefault() 
 	}
-
-
   
 	handleChange(event) {
 		this.setState({ [event.target.name]: event.target.value })
@@ -107,9 +91,53 @@ class AddArticle extends Component {
 			body_html: html_body,
 			body_txt: txt_body,
 		};
-		submitArticle(txt_body, input, articleId)
+		(async function(id){
+			if (!txt_body) {
+				alert('Error. Body cannot be empty');
+			}
+			else {
+				//const articleId = this.state.item
+				if(!id) {
+					let x = await createArticle(input).then(response => {
+						return response;
+					});
+					return x;			
+				}
+				else {
+					let y = await updateArticle(input, id).then(response =>{
+						return response;
+					});
+					return y;
+				}
+			}
+		})(articleId).then( response => {
+			switch(response) {
+				case 'Error':
+					console.log('Error. Something went wrong...');
+					break;
+				default:
+					this.setState({
+						response: true,
+					})
+			}
+		});
 		event.preventDefault()    
 	}
+	//handler for publish event
+	async handleAlternate(event) {
+		const section = 'articles'
+		const articleVars = {
+			sourceRoute: `public/${section}`,
+			sourceObject: `${this.state.title}.html`,
+			destRoute: `${section}`
+		};
+		await publishArticle(articleVars).then( response => {
+			console.log(response);
+			window.location.reload();
+		})
+		event.preventDefault();
+	  }
+	
 	
 	render() {
 		let list = this.state.list;
@@ -126,7 +154,7 @@ class AddArticle extends Component {
 							<option key={0} value=''>Select an option</option>
 							{optionItems}
 						</select>
-						<input type="submit" value="Submit"></input>
+						<input disabled={!this.state.item} type="submit" value="Open"></input>
 					</form>
 				</div>
 				<div className="container">
@@ -147,7 +175,8 @@ class AddArticle extends Component {
 							editorClassName="demo-editor"
 							onEditorStateChange={this.onEditorStateChange}
 						/>
-						<input type="submit" value="Submit" />
+						<input type="submit" value="Save" />
+						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
 					</form>
 				</div>
 			</div>
