@@ -25,6 +25,7 @@ class AddArticle extends Component {
 			body_txt: '',
 			list: [],
 			item: '',
+			itemProps: {},
 			response: false,
 		};
 		this.handleChange = this.handleChange.bind(this)
@@ -71,7 +72,13 @@ class AddArticle extends Component {
 					body_html: elem.body_html,
 					body_txt: elem.body_txt,
 					editorState: EditorState.createWithContent(state),
-				});	
+				});
+				this.setState({
+					itemProps: {
+					title: elem.title,
+					body_html: elem.body_html,
+					}
+				})	
 				
 			}
 		}
@@ -91,9 +98,19 @@ class AddArticle extends Component {
 			body_html: html_body,
 			body_txt: txt_body,
 		};
-		(async function(id){
+		var itemProps = this.state.itemProps;
+		var currentState = {
+			title: this.state.title,
+			body_html: editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null,
+		};
+		console.log(itemProps);
+		console.log(currentState);
+		(async function(id, props, state){
 			if (!txt_body) {
 				alert('Error. Body cannot be empty');
+			}
+			else if (state.body_html === props.body_html && state.title === props.title) {
+				alert('Error. Detected no changes...');
 			}
 			else {
 				//const articleId = this.state.item
@@ -110,7 +127,7 @@ class AddArticle extends Component {
 					return y;
 				}
 			}
-		})(articleId).then( response => {
+		})(articleId, itemProps, currentState).then( response => {
 			switch(response) {
 				case 'Error':
 					console.log('Error. Something went wrong...');
