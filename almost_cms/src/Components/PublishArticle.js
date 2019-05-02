@@ -17,7 +17,7 @@ export default async function publishArticle(articleVars) {
             switch(copyIndex) {
                 case 'Success':
                     console.log( "Congratulations! You have succesfully published your new Article!" );
-                    break;
+                    return 'Success';
                 default:
                     console.log("Error: Failed to copy your index")
                 }
