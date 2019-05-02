@@ -55,7 +55,7 @@ class AddArticle extends Component {
 		};
 
 	handleOpen(event) {
-		console.log(this.state.item)
+		console.log('item Id: ', this.state.item)
 		var id = this.state.item
 		for(let elem of this.state.list) {
 			if(elem.id === id) {
@@ -65,7 +65,6 @@ class AddArticle extends Component {
 					blocksFromHTML.contentBlocks,
 					blocksFromHTML.entityMap
 				);
-				console.log(elem.body_html)
 				this.setState({
 					title: elem.title,
 					body_html: elem.body_html,
@@ -103,7 +102,6 @@ class AddArticle extends Component {
 			title: this.state.title,
 			body_html: editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null,
 		};
-		console.log(this.state);
 		(async function (id, props, state){
 			if (!txt_body) {
 				alert('Error. Body cannot be empty');
@@ -136,11 +134,10 @@ class AddArticle extends Component {
 							title: this.state.title,
 							body_html: html_body,
 						}
-					})
-					console.log(this.state)
+					});
 					break;
 				default:
-					console.log('Error. Something went wrong...');
+					//Do nothing
 			}
 		});
 		event.preventDefault()    
@@ -150,14 +147,13 @@ class AddArticle extends Component {
 	handleAlternate(event) {
 		var { editorState } = this.state;
 		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
-		console.log(html_body)
 		const section = 'articles'
 		const articleVars = {
 			sourceRoute: `public/${section}`,
 			sourceObject: `${this.state.title}.html`,
 			destRoute: `${section}`
 		};
-		console.log(this.state.itemProps)	
+		//console.log(this.state.itemProps)	
 		if (this.state.title === this.state.itemProps.title && this.state.itemProps.body_html ===  html_body) {
 			publishArticle(articleVars)
 		}
