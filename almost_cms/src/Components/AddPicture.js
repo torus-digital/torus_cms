@@ -12,6 +12,7 @@ class AddPicture extends Component {
 			description: '',
 			file: '',
 			ext: '',
+			itemProps: '',
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -20,13 +21,14 @@ class AddPicture extends Component {
 		const file = e.target.files[0];
 		this.setState({ file: file });
 	}
-	handleChange(title, event) {
-		this.setState({ [title]: event.target.value })
+	handleChange(event) {
+		this.setState({ [event.target.name]: event.target.value })
 	}
 
 	handleSubmit(event) {
 		const file = this.state.file;
-		console.log(file);
+		var state = this.state;
+		var props = this.state.itemProps;
     	const file_str = file.name;
    	 	const ext = file_str.split('.')[1];
 		var input = {
@@ -34,41 +36,54 @@ class AddPicture extends Component {
 			description: this.state.description,
 			file: `${this.state.title}.${ext}`,
 		};
-		(async function(input, file, ext){
-			let x = await createPicture(input, file, ext).then(response => {
-				return response;
-			});
-			return x;
-		})(input, file, ext).then( response => {
-			console.log(response)
+		(async function(input, file, ext, state, props){
+			if (state.title === props.title && state.description === props.description && state.file.name === props.file_origin) {
+				alert('Error. No changes detected');
+			}
+			else {
+				let x = await createPicture(input, file, ext).then(response => {
+					return 'Success';
+				});
+				return x;
+			}
+		})(input, file, ext, state, props).then( response => {
+			//console.log(response)
 			switch(response) {
 				case 'Success':
 					this.setState({
 						ext: ext,
+						itemProps: {
+							title: this.state.title,
+							description: this.state.description,
+							file: `${this.state.title}.${ext}`,
+							file_origin: this.state.file.name
+						},
 					});
 					break;
 				default:
-					console.log('Error. Something went wrong...');
+					//Do Nothing
 			}
 		});
 		event.preventDefault()    
 	}
 	//handler for publish event
-	async handleAlternate(event) { 
+	handleAlternate(event) { 
 		const section = 'gallery';
 		var ext = this.state.ext;
 		var file = `${this.state.title}.${ext}`;
 		const bucketVars = {
 			sourceRoute: `public/${section}`,
 			sourceObject: file,
-			destRoute: section
+			destRoute: section,
 		};
-		await publishPicture(bucketVars).then( response => {
-			console.log(response);
-			window.location.reload();
-		})
+		if (this.state.title === this.state.itemProps.title && this.state.description === this.state.itemProps.description && this.state.file.name === this.state.itemProps.file_origin) {
+			publishPicture(bucketVars);
+		}
+		else {
+			alert('Error. Please Save your changes before publishing');
+		}
 		event.preventDefault();
-	  }
+	}
 	  
 	render() {
 		return (
@@ -82,14 +97,14 @@ class AddPicture extends Component {
 							required="required"
 							type="text"
 							value={this.state.title}
-							onChange={(event) => { this.handleChange('title', event)}}
+							onChange={this.handleChange}
 						/>
 						<input
 							name="description"
 							placeholder="description"
 							type="text"
 							value={this.state.description}
-							onChange={(event) => { this.handleChange('description', event)}}
+							onChange={this.handleChange}
 						/>
 						<input
 							name="file" 
