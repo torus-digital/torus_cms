@@ -9,11 +9,9 @@ Torus CMS is an open source serverless content management system (CMS) for build
 
 Torus CMS is standalone and can be added to any static site.  There is no need to migrate your site, learn a new language or do any maintenance.      
 
-Our Mission is to make the internet lighter. 
+Our Mission: To make the internet lighter. It's estimated that more than 1/3 of tha global servers are idle, wasting energy unnecesareley.   
 
-It's estimated that more than 1/3 of tha global servers are idle, wasting energy unnecesareley   
-
- We believe our tool will help  people transition to serverless/static sites and as a result reduce the percentage of idle servers which waste energy.        
+We believe Torus will help  people transition to serverless/static sites and as a result reduce the percentage of idle servers.        
 
 **We have ambitious plans for Torus.  Check out our main_project board for more info and updates**     
 
