@@ -55,8 +55,7 @@ class AddArticle extends Component {
 		};
 
 	handleOpen(event) {
-		console.log(this.state.item)
-
+		console.log('item Id: ', this.state.item)
 		var id = this.state.item
 		for(let elem of this.state.list) {
 			if(elem.id === id) {
@@ -66,7 +65,6 @@ class AddArticle extends Component {
 					blocksFromHTML.contentBlocks,
 					blocksFromHTML.entityMap
 				);
-				console.log(elem.body_html)
 				this.setState({
 					title: elem.title,
 					body_html: elem.body_html,
@@ -88,6 +86,7 @@ class AddArticle extends Component {
 	handleChange(event) {
 		this.setState({ [event.target.name]: event.target.value })
 	}
+
 	handleSubmit(event) {
 		var { editorState } = this.state;
 		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
@@ -103,7 +102,7 @@ class AddArticle extends Component {
 			title: this.state.title,
 			body_html: editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null,
 		};
-		(async function(id, props, state){
+		(async function (id, props, state){
 			if (!txt_body) {
 				alert('Error. Body cannot be empty');
 			}
@@ -114,44 +113,55 @@ class AddArticle extends Component {
 				//const articleId = this.state.item
 				if(!id) {
 					let x = await createArticle(input).then(response => {
-						return response;
+						return 'Success';
 					});
 					return x;			
 				}
 				else {
 					let y = await updateArticle(input, id).then(response =>{
-						return response;
+						return 'Success';
 					});
 					return y;
 				}
 			}
 		})(articleId, itemProps, currentState).then( response => {
 			switch(response) {
-				case 'Error':
-					console.log('Error. Something went wrong...');
-					break;
-				default:
+				case 'Success':
 					this.setState({
 						response: true,
-					})
+						body_html: html_body,
+						itemProps: {
+							title: this.state.title,
+							body_html: html_body,
+						}
+					});
+					break;
+				default:
+					//Do nothing
 			}
 		});
 		event.preventDefault()    
 	}
+
 	//handler for publish event
-	async handleAlternate(event) {
+	handleAlternate(event) {
+		var { editorState } = this.state;
+		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
 		const section = 'articles'
 		const articleVars = {
 			sourceRoute: `public/${section}`,
 			sourceObject: `${this.state.title}.html`,
 			destRoute: `${section}`
 		};
-		await publishArticle(articleVars).then( response => {
-			console.log(response);
-			window.location.reload();
-		})
+		//console.log(this.state.itemProps)	
+		if (this.state.title === this.state.itemProps.title && this.state.itemProps.body_html ===  html_body) {
+			publishArticle(articleVars)
+		}
+		else {
+			alert('Error. Please Save your changes before publishing')
+		}
 		event.preventDefault();
-	  }
+	}
 	
 	
 	render() {
@@ -174,7 +184,7 @@ class AddArticle extends Component {
 				</div>
 				<div className="container">
 					<h1>Post a comment</h1>
-					<form onSubmit={this.handleSubmit}>
+					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
 							type="text"
 							name="title"
