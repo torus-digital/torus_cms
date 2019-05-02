@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createPicture from './CreatePicture';
+import publishPicture from './PublishPicture';
 
 class AddPicture extends Component {
 	constructor(props) {
 		super(props)
 		this.state = { 
 			title: '',
-      description: '',
-      file: '',
+			description: '',
+			file: '',
+			ext: '',
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -21,27 +23,59 @@ class AddPicture extends Component {
 	handleChange(title, event) {
 		this.setState({ [title]: event.target.value })
 	}
+
 	handleSubmit(event) {
 		const file = this.state.file;
 		console.log(file);
-    const file_str = file.name;
-    const ext = file_str.split('.')[1];
+    	const file_str = file.name;
+   	 	const ext = file_str.split('.')[1];
 		var input = {
 			title: this.state.title,
 			description: this.state.description,
 			file: `${this.state.title}.${ext}`,
-		}
-		console.log(input)
-		createPicture(input, file, ext);
+		};
+		(async function(input, file, ext){
+			let x = await createPicture(input, file, ext).then(response => {
+				return response;
+			});
+			return x;
+		})(input, file, ext).then( response => {
+			console.log(response)
+			switch(response) {
+				case 'Success':
+					this.setState({
+						ext: ext,
+					});
+					break;
+				default:
+					console.log('Error. Something went wrong...');
+			}
+		});
 		event.preventDefault()    
 	}
+	//handler for publish event
+	async handleAlternate(event) { 
+		const section = 'gallery';
+		var ext = this.state.ext;
+		var file = `${this.state.title}.${ext}`;
+		const bucketVars = {
+			sourceRoute: `public/${section}`,
+			sourceObject: file,
+			destRoute: section
+		};
+		await publishPicture(bucketVars).then( response => {
+			console.log(response);
+			window.location.reload();
+		})
+		event.preventDefault();
+	  }
 	  
 	render() {
 		return (
 			<div>
 				<div className="container section">
 					<h1>Post an Image</h1>
-					<form onSubmit={this.handleSubmit}>
+					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
 							name="title"
 							placeholder="title"
@@ -65,7 +99,8 @@ class AddPicture extends Component {
 							accept='image/'
 							onChange={(e) => this.onChange(e)}
 						/>
-						<input type="submit" value="Submit" />
+						<input type="submit" value="Save" />
+						<button disabled={!this.state.ext} onClick={this.handleAlternate.bind(this)}>Publish</button>
 					</form>
 				</div>
 			</div>
