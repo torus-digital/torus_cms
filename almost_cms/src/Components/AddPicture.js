@@ -13,13 +13,24 @@ class AddPicture extends Component {
 			file: '',
 			ext: '',
 			itemProps: '',
+			imagePreviewUrl: '',
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 	}
 	onChange(e) {
+		e.preventDefault();
+    	let reader = new FileReader();
 		const file = e.target.files[0];
-		this.setState({ file: file });
+		reader.onloadend = () => {
+			this.setState({
+			  file: file,
+			  imagePreviewUrl: reader.result,
+			});
+		  }
+		if(file){
+			reader.readAsDataURL(file)
+		}
 	}
 	handleChange(event) {
 		this.setState({ [event.target.name]: event.target.value })
@@ -86,6 +97,13 @@ class AddPicture extends Component {
 	}
 	  
 	render() {
+		let {imagePreviewUrl} = this.state;
+		let $imagePreview = null;
+		if (imagePreviewUrl) {
+		$imagePreview = (<img src={imagePreviewUrl} alt={this.state.description}/>);
+		} else {
+		$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+		}
 		return (
 			<div>
 				<div className="container section">
@@ -117,6 +135,9 @@ class AddPicture extends Component {
 						<input type="submit" value="Save" />
 						<button disabled={!this.state.ext} onClick={this.handleAlternate.bind(this)}>Publish</button>
 					</form>
+					<div className="imgPreview">
+						{$imagePreview}
+					</div>
 				</div>
 			</div>
 		)
