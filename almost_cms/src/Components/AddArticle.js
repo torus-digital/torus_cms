@@ -137,7 +137,7 @@ class AddArticle extends Component {
 					});
 					break;
 				default:
-					//Do nothing
+					//Do Nothing
 			}
 		});
 		event.preventDefault()    
@@ -155,7 +155,7 @@ class AddArticle extends Component {
 		};
 		//console.log(this.state.itemProps)	
 		if (this.state.title === this.state.itemProps.title && this.state.itemProps.body_html ===  html_body) {
-			publishArticle(articleVars)
+			publishArticle(articleVars);
 		}
 		else {
 			alert('Error. Please Save your changes before publishing')
