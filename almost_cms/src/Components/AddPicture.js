@@ -3,6 +3,8 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createPicture from './CreatePicture';
 import publishPicture from './PublishPicture';
+import { API, graphqlOperation } from "aws-amplify";
+import pictureList from '../GraphQL/QueryPictureList';
 
 class AddPicture extends Component {
 	constructor(props) {
@@ -12,12 +14,33 @@ class AddPicture extends Component {
 			description: '',
 			file: '',
 			ext: '',
-			itemProps: '',
+			list: [],
+			item: '',
+			itemProps: {},
 			imagePreviewUrl: '',
 		};
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.handleOpen = this.handleOpen.bind(this)
 	}
+
+	//initialize select list with the results from the query
+	componentDidMount() {
+		let initialList = [];
+		API.graphql(graphqlOperation(pictureList))
+			.then(result => {
+				return result.data.listPictures.items;
+			}).then(data => {
+			initialList = data.map((picture) => {
+				return picture
+			});
+			this.setState({
+				list: initialList,
+			});
+		});
+	}
+
+	//set state var for the file on change
 	onChange(e) {
 		e.preventDefault();
     	let reader = new FileReader();
@@ -28,14 +51,40 @@ class AddPicture extends Component {
 			  imagePreviewUrl: reader.result,
 			});
 		  }
-		if(file){
+		if(file || this.state.item){
 			reader.readAsDataURL(file)
 		}
 	}
+	//set state vars of other form fields on change
 	handleChange(event) {
 		this.setState({ [event.target.name]: event.target.value })
 	}
 
+	//handler for openning items
+	handleOpen(event) {
+		console.log('item Id: ', this.state.item);
+		var id = this.state.item;
+		var siteUrl = 'http://almostcms.org';
+		var section = 'gallery';
+		for(let elem of this.state.list) {
+			if(elem.id === id) {
+				this.setState({
+					title: elem.title,
+					description: elem.description,
+					file: elem.file,
+					imagePreviewUrl: `${siteUrl}/${section}/${elem.file}`,
+					itemProps: {
+						title: elem.title,
+						description: elem.description,
+					}
+				})	
+				
+			}
+		}
+		event.preventDefault() 
+	}
+
+	//handler for submitting items
 	handleSubmit(event) {
 		const file = this.state.file;
 		var state = this.state;
@@ -99,14 +148,27 @@ class AddPicture extends Component {
 	render() {
 		let {imagePreviewUrl} = this.state;
 		let $imagePreview = null;
+		let list = this.state.list;
+		let optionItems = list.map((picture, i) =>
+			<option key={i+1} value={picture.id}>{picture.title}</option>
+		);
 		if (imagePreviewUrl) {
-		$imagePreview = (<img src={imagePreviewUrl} alt={this.state.description}/>);
-		} else {
-		$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+			$imagePreview = (<img src={imagePreviewUrl} alt={this.state.description}/>);
+		} 
+		else {
+			$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
 		}
 		return (
 			<div>
 				<div className="container section">
+				<h1>Open a Picture</h1>
+					<form onSubmit={this.handleOpen}>
+						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>
+							<option key={0} value=''>Select an option</option>
+							{optionItems}
+						</select>
+						<input disabled={!this.state.item} type="submit" value="Open"></input>
+					</form>
 					<h1>Post an Image</h1>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
