@@ -3,6 +3,7 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import updateArticle from './UpdateArticle';
+import deleteArticle from './DeleteArticle.js';
 import publishArticle from './PublishArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';
@@ -28,9 +29,10 @@ class AddArticle extends Component {
 			itemProps: {},
 			response: false,
 		};
-		this.handleChange = this.handleChange.bind(this)
-		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleOpen = this.handleOpen.bind(this)
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleOpen = this.handleOpen.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	componentDidMount() {
@@ -151,7 +153,8 @@ class AddArticle extends Component {
 		const articleVars = {
 			sourceRoute: `public/${section}`,
 			sourceObject: `${this.state.title}.html`,
-			destRoute: `${section}`
+			destRoute: `${section}`,
+			delete: false,
 		};
 		//console.log(this.state.itemProps)	
 		if (this.state.title === this.state.itemProps.title && this.state.itemProps.body_html ===  html_body) {
@@ -162,6 +165,21 @@ class AddArticle extends Component {
 		}
 		event.preventDefault();
 	}
+
+	handleDelete(event) {
+		var { editorState } = this.state;
+		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
+		var fileName = `${this.state.title}.html`;
+		//console.log(this.state.itemProps)	
+		if (this.state.title === this.state.itemProps.title && this.state.itemProps.body_html ===  html_body) {
+			deleteArticle(fileName);
+		}
+		else {
+			alert('Error. Please Save your changes before publishing')
+		}
+		event.preventDefault();
+	}
+
 	
 	
 	render() {
@@ -202,6 +220,7 @@ class AddArticle extends Component {
 						/>
 						<input type="submit" value="Save" />
 						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
+						<button disabled={!this.state} onClick={this.handleDelete.bind(this)}>Delete</button>
 					</form>
 				</div>
 			</div>

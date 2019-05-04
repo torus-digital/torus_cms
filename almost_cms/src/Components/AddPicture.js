@@ -86,6 +86,7 @@ class AddPicture extends Component {
 			sourceRoute: `public/${section}`,
 			sourceObject: file,
 			destRoute: section,
+			delete: false,
 		};
 		if (this.state.title === this.state.itemProps.title && this.state.description === this.state.itemProps.description && this.state.file.name === this.state.itemProps.file_origin) {
 			publishPicture(bucketVars);

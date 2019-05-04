@@ -1,5 +1,4 @@
 import { addToStorage } from './Shared.js';
-import 'semantic-ui-css/semantic.min.css';
 import { API, graphqlOperation } from "aws-amplify";
 import CreateArticle from '../GraphQL/MutationCreateArticle.js';
 //import the createIndexFunction
@@ -43,7 +42,8 @@ export default async function createArticle(input) {
 						const articleVars = {
 							sourceRoute: `public/${section}`,
 							sourceObject: `${input.title}.html`,
-							destRoute: `${section}`
+							destRoute: `${section}`,
+							delete: false,
 						};
 						// execute the create index function
 						console.log(articleVars)
