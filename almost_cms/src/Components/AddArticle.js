@@ -169,13 +169,12 @@ class AddArticle extends Component {
 	//handler for publish event
 	handleDelete(event) {
 		var fileName = `${this.state.title}.html`;
-		//console.log(this.state.itemProps)	
+		//console.log(this.state.itemProps)
+		alert('you are permanently deleting this item')	
 		deleteArticle('articles', fileName, this.state.item);
 		event.preventDefault();
 	}
 
-	
-	
 	render() {
 		let list = this.state.list;
 		let optionItems = list.map((article, i) =>
@@ -214,7 +213,7 @@ class AddArticle extends Component {
 						/>
 						<input type="submit" value="Save" />
 						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
-						<button disabled={!this.state.item && !this.state.itemProps.title} onClick={this.handleDelete.bind(this)}>Delete</button>
+						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.body_html} onClick={this.handleDelete.bind(this)}>Delete</button>
 					</form>
 				</div>
 			</div>

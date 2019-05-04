@@ -35,7 +35,7 @@ export function unPublish(bucketVars) {
 
   const post = axios.post( url, bucketVars, { headers } )
     .then(res => {
-      console.log(res);
+      console.log(res.data);
       x = 'Success';
       return x;
     })
@@ -65,14 +65,14 @@ export function addToStorage(contentType, section, title, fileObj, ext) {
 }
 
 export function removeFromStorage(objectPath) {
-  console.log("Removeing the file from S3 Storage...")
+  console.log("Removing the file from S3 Storage...")
   let rx = Storage.remove(objectPath, {
     progressCallback(progress) {
       console.log(`Uploading: ${progress.loaded}/${progress.total}`);
     },
   })
   .then(result => {
-    console.log('Succesfully removed the object from S3 Storage: ', result);
+    console.log(`Succesfully removed ${objectPath} from S3 Storage.`);
     return 'Success';
   })
   .catch(err => {
