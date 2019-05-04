@@ -65,7 +65,7 @@ export function addToStorage(contentType, section, title, fileObj, ext) {
 }
 
 export function removeFromStorage(objectPath) {
-  console.log("Uploading your file to S3 Storage...")
+  console.log("Removeing the file from S3 Storage...")
   let rx = Storage.remove(objectPath, {
     progressCallback(progress) {
       console.log(`Uploading: ${progress.loaded}/${progress.total}`);

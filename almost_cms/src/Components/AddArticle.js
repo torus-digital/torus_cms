@@ -166,17 +166,11 @@ class AddArticle extends Component {
 		event.preventDefault();
 	}
 
+	//handler for publish event
 	handleDelete(event) {
-		var { editorState } = this.state;
-		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
 		var fileName = `${this.state.title}.html`;
 		//console.log(this.state.itemProps)	
-		if (this.state.title === this.state.itemProps.title && this.state.itemProps.body_html ===  html_body) {
-			deleteArticle(fileName);
-		}
-		else {
-			alert('Error. Please Save your changes before publishing')
-		}
+		deleteArticle('articles', fileName, this.state.item);
 		event.preventDefault();
 	}
 
@@ -220,7 +214,7 @@ class AddArticle extends Component {
 						/>
 						<input type="submit" value="Save" />
 						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
-						<button disabled={!this.state} onClick={this.handleDelete.bind(this)}>Delete</button>
+						<button disabled={!this.state.item && !this.state.itemProps.title} onClick={this.handleDelete.bind(this)}>Delete</button>
 					</form>
 				</div>
 			</div>
