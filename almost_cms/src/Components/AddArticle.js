@@ -217,7 +217,7 @@ class AddArticle extends Component {
 							onEditorStateChange={this.onEditorStateChange}
 						/>
 						</div>
-						<input type="submit" value="Save" className="btn-green"/>
+						<input type="submit" value="Save"/>
 						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)} className="btn-blue">Publish</button>
 						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.body_html} onClick={this.handleDelete.bind(this)} className="btn-red">Delete</button>
 					</form>

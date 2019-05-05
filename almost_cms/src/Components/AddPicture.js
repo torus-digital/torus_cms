@@ -220,7 +220,7 @@ class AddPicture extends Component {
 							accept='image/'
 							onChange={(e) => this.onChange(e)}
 						/>
-						<input type="submit" value="Save" className="btn-green"/>
+						<input type="submit" value="Save"/>
 						<button disabled={!this.state.ext} onClick={this.handlePublish.bind(this)} className="btn-blue">Publish</button>
 						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.file} onClick={this.handleDelete.bind(this)} className="btn-red">Delete</button>
 					</form>
