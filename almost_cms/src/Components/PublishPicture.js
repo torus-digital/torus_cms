@@ -9,7 +9,8 @@ export default async function publishPicture(bucketVars){
             const galleryVars = {
                 sourceRoute: 'public/gallery',
                 sourceObject: 'index.html',
-                destRoute: 'gallery'
+                destRoute: 'gallery',
+                delete: false
             };
             // copy the gallery to the s3 website bucket
             let copyGallery = await new copyToBucket(galleryVars);

@@ -1,9 +1,8 @@
 import { addToStorage } from './Shared.js';
-import 'semantic-ui-css/semantic.min.css';
 import { API, graphqlOperation } from "aws-amplify";
 import CreateArticle from '../GraphQL/MutationCreateArticle.js';
 //import the createIndexFunction
-import createIndex from './CreateArticleIndex'		
+import createIndex from './CreateArticleIndex';		
 //import publishArticle from './PublishArticle.js';
 		
 export default async function createArticle(input) {
@@ -21,7 +20,7 @@ export default async function createArticle(input) {
 	}
 	var addToDB = await API.graphql(graphqlOperation(CreateArticle, input))
 	.then (result => {
-		console.log(`Successfully added the item ${result.data.createArticle.title} to the Pictures table. reference:`, result.data.createArticle.id)
+		console.log(`Successfully added the item ${result.data.createArticle.title} to the Articles table. reference:`, result.data.createArticle.id)
 		return 'Success'
 	})
 	.catch(err => {
@@ -43,7 +42,8 @@ export default async function createArticle(input) {
 						const articleVars = {
 							sourceRoute: `public/${section}`,
 							sourceObject: `${input.title}.html`,
-							destRoute: `${section}`
+							destRoute: `${section}`,
+							delete: false,
 						};
 						// execute the create index function
 						console.log(articleVars)
