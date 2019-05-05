@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createPicture from './CreatePicture';
+import updatePicture from './UpdatePicture';
+import deletePicture from './DeletePicture';
 import publishPicture from './PublishPicture';
 import { API, graphqlOperation } from "aws-amplify";
 import pictureList from '../GraphQL/QueryPictureList';
-import updatePicture from './UpdatePicture'
 
 class AddPicture extends Component {
 	constructor(props) {
@@ -20,9 +21,10 @@ class AddPicture extends Component {
 			itemProps: {},
 			imagePreviewUrl: '',
 		};
-		this.handleChange = this.handleChange.bind(this)
-		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleOpen = this.handleOpen.bind(this)
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleOpen = this.handleOpen.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	//initialize select list with the results from the query
@@ -72,10 +74,12 @@ class AddPicture extends Component {
 				this.setState({
 					title: elem.title,
 					description: elem.description,
+					file: elem.file,
 					imagePreviewUrl: `${siteUrl}/${section}/${elem.file}`,
 					itemProps: {
 						title: elem.title,
 						description: elem.description,
+						file: elem.file,
 					}
 				})	
 				
@@ -139,7 +143,7 @@ class AddPicture extends Component {
 		event.preventDefault()    
 	}
 	//handler for publish event
-	handleAlternate(event) { 
+	handlePublish(event) { 
 		const section = 'gallery';
 		var ext = this.state.ext;
 		var file = `${this.state.title}.${ext}`;
@@ -155,6 +159,15 @@ class AddPicture extends Component {
 		else {
 			alert('Error. Please Save your changes before publishing');
 		}
+		event.preventDefault();
+	}
+
+	//handler for publish event
+	handleDelete(event) {
+		var fileName = this.state.file;
+		//console.log(this.state.itemProps)
+		alert('you are permanently deleting this item')	
+		deletePicture('gallery', fileName, this.state.item);
 		event.preventDefault();
 	}
 	  
@@ -208,7 +221,8 @@ class AddPicture extends Component {
 							onChange={(e) => this.onChange(e)}
 						/>
 						<input type="submit" value="Save" />
-						<button disabled={!this.state.ext} onClick={this.handleAlternate.bind(this)}>Publish</button>
+						<button disabled={!this.state.ext} onClick={this.handlePublish.bind(this)}>Publish</button>
+						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.file} onClick={this.handleDelete.bind(this)}>Delete</button>
 					</form>
 					<div className="imgPreview">
 						{$imagePreview}
