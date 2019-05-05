@@ -188,7 +188,7 @@ class AddArticle extends Component {
 		return (
 			<div>
 				<div className="container">
-					<h1>Open an Article</h1>
+					<h2>Open an Article</h2>
 					<form onSubmit={this.handleOpen}>
 						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>
 							<option key={0} value=''>Select an option</option>
@@ -198,7 +198,7 @@ class AddArticle extends Component {
 					</form>
 				</div>
 				<div className="container">
-					<h1>Post a comment</h1>
+					<h2>Post an Article</h2>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
 							type="text"
@@ -208,6 +208,7 @@ class AddArticle extends Component {
 							value={this.state.title}
 							onChange={this.handleChange}
 						/>
+						<div className="editor">
 						<Editor
 							value={editorState}
 							editorState={editorState}
@@ -215,9 +216,10 @@ class AddArticle extends Component {
 							editorClassName="demo-editor"
 							onEditorStateChange={this.onEditorStateChange}
 						/>
-						<input type="submit" value="Save" />
-						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
-						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.body_html} onClick={this.handleDelete.bind(this)}>Delete</button>
+						</div>
+						<input type="submit" value="Save" className="btn-green"/>
+						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)} className="btn-blue">Publish</button>
+						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.body_html} onClick={this.handleDelete.bind(this)} className="btn-red">Delete</button>
 					</form>
 				</div>
 			</div>

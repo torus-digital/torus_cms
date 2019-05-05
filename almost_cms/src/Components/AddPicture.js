@@ -187,7 +187,7 @@ class AddPicture extends Component {
 		return (
 			<div>
 				<div className="container section">
-				<h1>Open a Picture</h1>
+					<h2>Open a Picture</h2>
 					<form onSubmit={this.handleOpen}>
 						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>
 							<option key={0} value=''>Select an option</option>
@@ -195,7 +195,7 @@ class AddPicture extends Component {
 						</select>
 						<input disabled={!this.state.item} type="submit" value="Open"></input>
 					</form>
-					<h1>Post an Image</h1>
+					<h2>Post a Picture</h2>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
 							name="title"
@@ -220,9 +220,9 @@ class AddPicture extends Component {
 							accept='image/'
 							onChange={(e) => this.onChange(e)}
 						/>
-						<input type="submit" value="Save" />
-						<button disabled={!this.state.ext} onClick={this.handlePublish.bind(this)}>Publish</button>
-						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.file} onClick={this.handleDelete.bind(this)}>Delete</button>
+						<input type="submit" value="Save" className="btn-green"/>
+						<button disabled={!this.state.ext} onClick={this.handlePublish.bind(this)} className="btn-blue">Publish</button>
+						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.file} onClick={this.handleDelete.bind(this)} className="btn-red">Delete</button>
 					</form>
 					<div className="imgPreview">
 						{$imagePreview}

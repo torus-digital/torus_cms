@@ -46,4 +46,24 @@
   height: auto;
 }
 
+.section {
+  padding-top: 50px;
+}
+
+.editor {
+  border: 1px solid gray;
+}
+
+.btn-red:enabled {
+  background-color: red;
+}
+
+.btn-green:enabled {
+  background-color: green;
+}
+
+.btn-blue:enabled {
+  background-color: blue;
+  color: white;
+}
 
