@@ -3,7 +3,7 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import updateArticle from './UpdateArticle';
-import deleteArticle from './DeleteArticle.js';
+import deleteArticle from './DeleteArticle';
 import publishArticle from './PublishArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';

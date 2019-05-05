@@ -5,6 +5,7 @@ import createPicture from './CreatePicture';
 import publishPicture from './PublishPicture';
 import { API, graphqlOperation } from "aws-amplify";
 import pictureList from '../GraphQL/QueryPictureList';
+import updatePicture from './UpdatePicture'
 
 class AddPicture extends Component {
 	constructor(props) {
@@ -71,7 +72,6 @@ class AddPicture extends Component {
 				this.setState({
 					title: elem.title,
 					description: elem.description,
-					file: elem.file,
 					imagePreviewUrl: `${siteUrl}/${section}/${elem.file}`,
 					itemProps: {
 						title: elem.title,
@@ -86,27 +86,39 @@ class AddPicture extends Component {
 
 	//handler for submitting items
 	handleSubmit(event) {
+		console.log(this.state);
 		const file = this.state.file;
 		var state = this.state;
 		var props = this.state.itemProps;
-    	const file_str = file.name;
+		var pictureId =  this.state.item;
+		const file_str = file.name;
+		console.log(file_str)
    	 	const ext = file_str.split('.')[1];
 		var input = {
 			title: this.state.title,
 			description: this.state.description,
 			file: `${this.state.title}.${ext}`,
 		};
-		(async function(input, file, ext, state, props){
+		console.log(input);
+		(async function(input, file, ext, state, props, id){
 			if (state.title === props.title && state.description === props.description && state.file.name === props.file_origin) {
 				alert('Error. No changes detected');
 			}
 			else {
-				let x = await createPicture(input, file, ext).then(response => {
-					return 'Success';
-				});
-				return x;
+				if(!id) {
+					let x = await createPicture(input, file, ext).then(response => {
+						return 'Success';
+					});
+					return x;
+				}
+				else {
+					let y = await updatePicture(input, file, ext, pictureId).then(response =>{
+						return 'Success';
+					});
+					return y;
+				}	
 			}
-		})(input, file, ext, state, props).then( response => {
+		})(input, file, ext, state, props, pictureId).then( response => {
 			//console.log(response)
 			switch(response) {
 				case 'Success':

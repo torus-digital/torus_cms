@@ -27,7 +27,7 @@ export default async function updateArticle(input, item) {
     }
 	var putToDB = await API.graphql(graphqlOperation(UpdateArticle, putInput))
 	.then (result => {
-		console.log(`Successfully added the item ${result.data.updateArticle.title} to the Pictures table. reference:`, result.data.updateArticle.id)
+		console.log(`Successfully updated the item ${result.data.updateArticle.title} in the Pictures table. reference:`, result.data.updateArticle.id)
 		return 'Success'
 	})
 	.catch(err => {
