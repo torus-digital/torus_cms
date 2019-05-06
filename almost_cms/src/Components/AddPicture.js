@@ -67,7 +67,6 @@ class AddPicture extends Component {
 	handleOpen(event) {
 		console.log('item Id: ', this.state.item);
 		var id = this.state.item;
-		var siteUrl = 'http://almostcms.org';
 		var section = 'gallery';
 		for(let elem of this.state.list) {
 			if(elem.id === id) {
@@ -75,7 +74,7 @@ class AddPicture extends Component {
 					title: elem.title,
 					description: elem.description,
 					file: elem.file,
-					imagePreviewUrl: `${siteUrl}/${section}/${elem.file}`,
+					imagePreviewUrl: `${process.env.REACT_APP_SITE_URL}/${section}/${elem.file}`,
 					itemProps: {
 						title: elem.title,
 						description: elem.description,
