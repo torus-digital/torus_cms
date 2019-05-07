@@ -99,7 +99,7 @@ function stmt3(){
                 break;
             case 'n':
                 console.log(`please create a new IAM user and enter the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables`)
-                console.log(`for more info check out https://github.com/gkpty/almost_cms`);
+                console.log(`for more info check out https://github.com/gkpty/torus_cms`);
                 (async () => {
                     await open('https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new?step=details');
                 })();
