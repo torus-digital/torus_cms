@@ -1,24 +1,22 @@
 
 <img src="img/torus_logo.png" alt="logo" width="200px" align="center">
 
-## A new way of making web sites
-
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org) 
 
-Torus CMS is an open source serverless content management system (CMS) for building, managing and deploying static sites.  It's fully mobile compatible and provides a friendly GUI  allowing you to easily publish content from any device.   
+Torus CMS is an open source micro service based serverless content management system (CMS) for building, managing and deploying static sites.  It's fully mobile compatible and provides a friendly GUI  allowing you to easily publish content from any device.   
 
 Torus CMS is standalone and can be added to any static site.  There is no need to migrate your site, learn a new language or do any maintenance.      
 
-Our Mission is to make the internet lighter. 
-
-It's estimated that more than 1/3 of tha global servers are idle, wasting energy unnecesareley   
-
- We believe our tool will help  people transition to serverless/static sites and as a result reduce the percentage of idle servers which waste energy.        
-
-**We have ambitious plans for Torus.  Check out our main_project board for more info and updates**     
+**We have ambitious plans for Torus.  Check out our main_project board for more info and updates **   
 
 
-# Getting Started with almost CMS
+
+# How it works 
+<img src="img/torus_howitworks.png" alt="logo" width="" align="center">
+
+
+
+# Getting Started
     
  ## Pre-requisites
 
