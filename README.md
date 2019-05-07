@@ -19,7 +19,7 @@ Torus CMS is standalone and can be added to any static site. There is no need to
 
 ## Steps
 1. Clone the git repository
-2. Go into the app directory of the project ` cd almost_cms/almost_cms `
+2. Go into the directory of the project ` cd torus_cms `
 3. Install all dependencies by running ` npm install`
 4. Install the amplify cli ` npm install -g @aws-amplify/cli`
 5. run the deplyment script `node deployment-script.js`
