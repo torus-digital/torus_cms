@@ -3,7 +3,7 @@ import '../App.css';
 import 'semantic-ui-css/semantic.min.css';
 import createArticle from './CreateArticle';
 import updateArticle from './UpdateArticle';
-import deleteArticle from './DeleteArticle.js';
+import deleteArticle from './DeleteArticle';
 import publishArticle from './PublishArticle';
 import { API, graphqlOperation } from "aws-amplify";
 import articleList from '../GraphQL/QueryArticleList';
@@ -15,9 +15,10 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 
 class AddArticle extends Component {
+	//initialize state variables
 	state = {
-    editorState: EditorState.createEmpty(),
-  }
+    	editorState: EditorState.createEmpty(),
+  	}
 	constructor(props) {
 		super(props)
 		this.state = { 
@@ -35,6 +36,7 @@ class AddArticle extends Component {
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
+	//initialize select list with the results from the query
 	componentDidMount() {
     let initialList = [];
     API.graphql(graphqlOperation(articleList))
@@ -50,12 +52,19 @@ class AddArticle extends Component {
     });
 	}
 
+	//set state var of the editor on change
 	onEditorStateChange: Function = (editorState) => {
 			this.setState({
 				editorState,
 			});
 		};
+		
+	//set state vars of other form fields on change
+	handleChange(event) {
+		this.setState({ [event.target.name]: event.target.value })
+	}
 
+	//handler for openning items
 	handleOpen(event) {
 		console.log('item Id: ', this.state.item)
 		var id = this.state.item
@@ -72,23 +81,18 @@ class AddArticle extends Component {
 					body_html: elem.body_html,
 					body_txt: elem.body_txt,
 					editorState: EditorState.createWithContent(state),
-				});
-				this.setState({
 					itemProps: {
 					title: elem.title,
 					body_html: elem.body_html,
 					}
-				})	
+				});	
 				
 			}
 		}
 		event.preventDefault() 
 	}
-  
-	handleChange(event) {
-		this.setState({ [event.target.name]: event.target.value })
-	}
 
+	//handler for submitting items
 	handleSubmit(event) {
 		var { editorState } = this.state;
 		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
@@ -145,7 +149,7 @@ class AddArticle extends Component {
 		event.preventDefault()    
 	}
 
-	//handler for publish event
+	//handler for publishing items
 	handleAlternate(event) {
 		var { editorState } = this.state;
 		var html_body = editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : null;
@@ -184,9 +188,9 @@ class AddArticle extends Component {
 		return (
 			<div>
 				<div className="container">
-					<h1>Open an Article</h1>
+					<h2>Open an Article</h2>
 					<form onSubmit={this.handleOpen}>
-						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>>
+						<select value={this.state.item} onChange={(e) => this.setState({item: e.target.value})}>
 							<option key={0} value=''>Select an option</option>
 							{optionItems}
 						</select>
@@ -194,7 +198,7 @@ class AddArticle extends Component {
 					</form>
 				</div>
 				<div className="container">
-					<h1>Post a comment</h1>
+					<h2>Post an Article</h2>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
 							type="text"
@@ -204,6 +208,7 @@ class AddArticle extends Component {
 							value={this.state.title}
 							onChange={this.handleChange}
 						/>
+						<div className="editor">
 						<Editor
 							value={editorState}
 							editorState={editorState}
@@ -211,9 +216,10 @@ class AddArticle extends Component {
 							editorClassName="demo-editor"
 							onEditorStateChange={this.onEditorStateChange}
 						/>
-						<input type="submit" value="Save" />
-						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)}>Publish</button>
-						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.body_html} onClick={this.handleDelete.bind(this)}>Delete</button>
+						</div>
+						<input type="submit" value="Save"/>
+						<button disabled={!this.state.response} onClick={this.handleAlternate.bind(this)} className="btn-blue">Publish</button>
+						<button disabled={!this.state.item || !this.state.itemProps.title || !this.state.itemProps.body_html} onClick={this.handleDelete.bind(this)} className="btn-red">Delete</button>
 					</form>
 				</div>
 			</div>

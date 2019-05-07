@@ -1,4 +1,4 @@
-const CreatePicture = `mutation($title: String!, $description: String!, $file: String!) {
+const CreatePicture = `mutation($title: String!, $description: String, $file: String!) {
   createPicture(input:{
     title: $title
     description: $description
