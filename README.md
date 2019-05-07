@@ -3,18 +3,12 @@
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org) 
 
-Torus CMS is an open source micro service based serverless content management system (CMS) for building, managing and deploying static sites.  It's fully mobile compatible and provides a friendly GUI  allowing you to easily publish content from any device.   
+Torus CMS is an open source micro service based serverless content management system (CMS) for building, managing and deploying static sites in a light, cost-effective way. It's mobile compatible and it provides a friendly GUI, allowing you to easily publish content from any device.   
 
-Torus CMS is standalone and can be added to any static site.  There is no need to migrate your site, learn a new language or do any maintenance.      
-
-**We have ambitious plans for Torus.  Check out our main_project board for more info and updates **   
-
-
+Torus CMS is standalone and can be added to any static site. There is no need to migrate your site, learn a new language or do any maintenance.     
 
 # How it works 
 <img src="img/torus_howitworks.png" alt="logo" width="" align="center">
-
-
 
 # Getting Started
     
@@ -55,11 +49,9 @@ Torus CMS is standalone and can be added to any static site.  There is no need t
     1. Select ` dev `
     2. For the name of the bucket, enter ` admin.your-domain.com ` replace your-domain.com with your domain..
 
-
-15. Re-run the deployment script. the name of your storage bucket will contain -dev at the end (dev is the name of your environment).
+15. Re-run the deployment script. Add a -dev at the end of the name your sotrage bucket (e.g. yourstorage-bucket-dev). this assumes you named your environment dev.
 
 16. Add a new variable to your .env file containing the api invoke URL `REACT_APP_COPY_BUCKET_URL=your-invoke-url`.
-
 
 16. Now your ready to publish your app. Run ` amplify publish `
 

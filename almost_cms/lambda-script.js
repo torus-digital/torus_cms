@@ -30,7 +30,8 @@ exports.script = function lambdaScript(iam, fs, lambda, apigateway, domainName, 
                     "Sid": "DestinationBucketPutObjectAccess",
                     "Effect": "Allow",
                     "Action": [
-                        "s3:PutObject"
+                        "s3:PutObject",
+                        "s3:DeleteObject"
                     ],
                     "Resource": "arn:aws:s3:::${domainName}/*"
                 }
