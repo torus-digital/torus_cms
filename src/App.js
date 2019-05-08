@@ -12,7 +12,7 @@ import AddArticle from "./Components/AddArticle"
 //import awsconfig from './aws-exports';
 
 // Amplify init
-Amplify.configure(awsconfig);
+//Amplify.configure(awsconfig);
 
 class App extends Component {
 
