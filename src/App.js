@@ -9,7 +9,7 @@ import { withAuthenticator } from 'aws-amplify-react';
 // Components
 import AddPicture from "./Components/AddPicture";
 import AddArticle from "./Components/AddArticle"
-import awsconfig from './aws-exports';
+//import awsconfig from './aws-exports';
 
 // Amplify init
 Amplify.configure(awsconfig);
