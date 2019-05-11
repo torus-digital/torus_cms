@@ -51,6 +51,8 @@ Torus CMS is standalone and can be added to any static site. There is no need to
 
 15. Re-run the deployment script. Add a -dev at the end of the name your sotrage bucket (e.g. yourstorage-bucket-dev). this assumes you named your environment dev.
 
+16. Make sure to change the nameservers in your domain's DNS to use the nameservers from route 53.
+
 16. Add a two more variables to your .env file containing your API's invoke URL and your website's url. 
 ```
 REACT_APP_COPY_BUCKET_URL=your-invoke-url
