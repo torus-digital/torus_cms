@@ -21,7 +21,7 @@ Torus CMS is standalone and can be added to any static site. There is no need to
 1. Clone the git repository
 2. Go into the directory of the project ` cd torus_cms `
 3. Install all dependencies by running ` npm install`
-4. Install the amplify cli ` npm install -g @aws-amplify/cli`
+4. Install the amplify CLI if you havn't done so already ` npm install -g @aws-amplify/cli`
 5. run the deplyment script `node deployment-script.js`
 6. Configure amplify by running ` amplify configure `
     - If you need help with configuration check out this [video tutorial](https://www.youtube.com/watch?v=fWbM5DLh25U)
@@ -41,7 +41,7 @@ Torus CMS is standalone and can be added to any static site. There is no need to
 ![init2](img/init2.png)
 10. Add authentication ` amplify add auth` use the default configuration
 11. Add an S3 storage bucket ` amplify add storage `
-![storage](img/storage.png)
+![storage](img/storage.png) ** you can use the space bar to select multiple options
 12. Add a graphQL API ` amplify add api ` to easily store and retrieve data from dynamoDB 
 ![api](img/api.png)
 13. Set up hosting for the amplify app `amplify hosting add `
@@ -51,12 +51,14 @@ Torus CMS is standalone and can be added to any static site. There is no need to
 
 15. Re-run the deployment script. Add a -dev at the end of the name your sotrage bucket (e.g. yourstorage-bucket-dev). this assumes you named your environment dev.
 
-16. Make sure to change the nameservers in your domain's DNS to use the nameservers from route 53.
+16. Make sure to change the nameservers in your domain's DNS settings to use the four nameservers from route 53. This step will vary depending on your domain name registrar.
+![nameservers](img/nameservers.png)
+
 
 16. Add a two more variables to your .env file containing your API's invoke URL and your website's url. 
 ```
 REACT_APP_COPY_BUCKET_URL=your-invoke-url
-REACT_APP_SITE_URL=your-site.com
+REACT_APP_SITE_URL=http://your-domain.com
 ```
 
 16. Now your ready to publish your app. Run ` amplify publish `
@@ -65,4 +67,7 @@ REACT_APP_SITE_URL=your-site.com
     2. Be a bit patient ...
 
 17. Your all set! now you can upload pictures and articles to your static site!
+![login screen](img/login-screen.png)
+
+18. Instead of publishing the admin app you can also only publish the backend by running ` amplify push ` then you can run the app locally with ` npm start ` 
 

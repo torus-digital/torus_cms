@@ -93,4 +93,3 @@ dist/
 node_modules/
 aws-exports.js
 awsconfiguration.json
-src/aws-exports.js
