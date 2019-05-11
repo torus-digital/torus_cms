@@ -91,7 +91,7 @@ exports.script = function lambdaScript(iam, fs, lambda, apigateway, domainName, 
                                 // CREATE THE LAMBDA COPY BUCKET FUNCTION
                                 var funcParams = {
                                     Code: {
-                                        ZipFile: fs.readFileSync('../copyFunction.zip') 
+                                        ZipFile: fs.readFileSync('copyFunction.zip') 
                                     }, 
                                     Description: "This Lambda Function Allows you to copy objects from one bucket to another", 
                                     FunctionName: `almostCopyFunction${uniqNow}`, 

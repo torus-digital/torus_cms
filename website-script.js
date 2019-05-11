@@ -110,7 +110,7 @@ exports.script = function websiteScript(s3, route53, path, fs, domainName) {
 							});
 						});
 					};			
-					uploadDir("../website_template", domainName);
+					uploadDir("website_template", domainName);
 
 					// CREATE THE WWW REROUTE BUCKET
 					var wbucketParams = {
