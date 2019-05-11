@@ -47,7 +47,7 @@ Torus CMS is standalone and can be added to any static site. There is no need to
 13. Set up hosting for the amplify app `amplify hosting add `
     
     1. Select ` dev `
-    2. For the name of the bucket, enter ` admin.your-domain.com ` replace your-domain.com with your domain..
+    2. For the name of the bucket, enter ` admin.your-domain.com ` replace your-domain.com with your domain.
 
 15. Re-run the deployment script. Add a -dev at the end of the name your sotrage bucket (e.g. yourstorage-bucket-dev). this assumes you named your environment dev.
 
