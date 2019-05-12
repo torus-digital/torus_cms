@@ -1,8 +1,11 @@
 
-<img src="img/torus_logo.png" alt="logo" width="200px" align="center">
+<img src="img/torus_logo.png" alt="logo" width="200px" style="display: block;margin-left: auto;margin-right: auto;">
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org) 
 [![Build Status](https://travis-ci.com/gkpty/torus_cms.svg?branch=master)](https://travis-ci.com/gkpty/torus_cms)
+[![Build Status](https://cdn.brandfolder.io/5H442O3W/as/pl546j-7le8zk-5guop3/Slack_RGB.png?width=80)](https://toruscms.slack.com/)
+
+
 
 Torus CMS is an open source micro service based serverless content management system (CMS) for building, managing and deploying static sites in a light, cost-effective way. It's mobile compatible and it provides a friendly GUI, allowing you to easily publish content from any device.   
 
