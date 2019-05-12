@@ -1,5 +1,5 @@
 
-<img src="img/torus_logo.png" alt="logo" width="200px" style="display: block;margin-left: auto;margin-right: auto;">
+<img src="img/torus_logo.png" alt="logo" width="30%" style="display: block; margin-left: auto; margin-right: auto;">
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org) 
 [![Build Status](https://travis-ci.com/gkpty/torus_cms.svg?branch=master)](https://travis-ci.com/gkpty/torus_cms)
