@@ -3,7 +3,7 @@
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org) 
 [![Build Status](https://travis-ci.com/gkpty/torus_cms.svg?branch=master)](https://travis-ci.com/gkpty/torus_cms)
-[![Build Status](https://cdn.brandfolder.io/5H442O3W/as/pl546j-7le8zk-5guop3/Slack_RGB.png?width=80)](https://toruscms.slack.com/)
+[![Slack Channel](https://cdn.brandfolder.io/5H442O3W/as/pl54cs-bd9mhs-9rj1zd/btn-add-to-slack.png?width=80)](https://toruscms.slack.com/)
 
 
 
