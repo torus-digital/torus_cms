@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "amplify": "0.0.11",
-    "aws-amplify": "^1.1.24",
+    "aws-amplify": "^6.15.7",
     "aws-amplify-react": "^2.3.4",
     "aws-sdk": "^2.437.0",
     "draft-js": "^0.10.5",
